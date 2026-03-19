@@ -61,7 +61,7 @@
     .badge.red { background: rgba(239,68,68,.2); color: #fee2e2; }
     .tabs {
       margin-top: 18px;
-      display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 12px;
+      display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 12px;
     }
     .tab-btn {
       border: 2px solid #cfd8e3; background: white; border-radius: 22px;
@@ -121,6 +121,11 @@
     .event { display:flex; justify-content:space-between; align-items:center; border:1px solid var(--line); border-radius:14px; padding:10px 12px; margin-bottom:8px; }
     .small { font-size: 12px; color: var(--muted); }
     .stack { display:grid; gap: 12px; }
+
+    .compact-input { width: 78px; padding: 8px 10px; }
+    .tiny-check { transform: scale(1.15); }
+    .status-good { color: #166534; font-weight: 700; }
+    .status-warn { color: #92400e; font-weight: 700; }
     @media (max-width: 900px) {
       .tabs, .grid-3, .grid-2, .grid-main, .row, .row-2 { grid-template-columns: 1fr; }
       .banner h1 { font-size: 30px; }
@@ -156,6 +161,7 @@
       <button class="tab-btn" data-tab="game">Game Tracker<small>Pitching + at bats</small></button>
       <button class="tab-btn" data-tab="practice">Practice<small>Plan builder</small></button>
       <button class="tab-btn" data-tab="roster">Roster<small>Add, edit, remove</small></button>
+      <button class="tab-btn" data-tab="import">Import<small>GameChanger CSV</small></button>
     </div>
 
     <div id="dashboard" class="tab active">
@@ -281,7 +287,7 @@
           <div class="card-head"><h3>Roster and ratings</h3></div>
           <div class="card-body table-wrap">
             <table>
-              <thead><tr><th>Player</th><th>Contact</th><th>Speed</th><th>Fielding</th><th>Arm</th><th>Confidence</th><th>Move</th><th>Remove</th></tr></thead>
+              <thead><tr><th>Player</th><th>Contact</th><th>Speed</th><th>Fielding</th><th>Arm</th><th>Confidence</th><th>Pitcher</th><th>Catcher</th><th>Move</th><th>Remove</th></tr></thead>
               <tbody id="rosterTable"></tbody>
             </table>
           </div>
@@ -307,7 +313,60 @@
           </div>
         </div>
       </div>
+    
+    <div id="import" class="tab">
+      <div class="grid-main">
+        <div class="card">
+          <div class="card-head"><h3>Import GameChanger CSV</h3></div>
+          <div class="card-body stack">
+            <div class="note">
+              Upload a GameChanger CSV export. The app will try to match players by name and update ratings and stats.
+            </div>
+            <div>
+              <label>Choose CSV file</label>
+              <input id="csvFileInput" type="file" accept=".csv,text/csv" />
+            </div>
+            <div class="row-2">
+              <div>
+                <label>Name column</label>
+                <select id="nameColumnSelect"></select>
+              </div>
+              <div>
+                <label>Recent games weight</label>
+                <input id="recentWeightInput" type="number" min="0" max="100" value="60" />
+              </div>
+            </div>
+            <div class="note">
+              Expected columns can include names like: Player, Name, AVG, OBP, SLG, Hits, RBI, Runs, SB, Innings, ERA, Strikeouts, Walks.
+            </div>
+            <div class="actions">
+              <button id="parseCsvBtn" type="button">Parse CSV</button>
+              <button id="applyCsvBtn" type="button" class="secondary">Apply Import</button>
+            </div>
+            <div id="importStatus" class="subtle">No CSV loaded yet.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Import preview</h3></div>
+          <div class="card-body table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Roster Player</th>
+                  <th>CSV Match</th>
+                  <th>New Ratings</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="importPreviewTable">
+                <tr><td colspan="4" class="subtle">No preview yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 
   <script>
@@ -335,6 +394,9 @@
     let selectedPitcherId = 1;
     let selectedBatterId = 1;
     let practiceGoal = "Fielding + hitting + confidence";
+    let csvRows = [];
+    let csvHeaders = [];
+    let importPreview = [];
 
     function scorePlayerForLineup(player, slot) {
       const base = player.contact * 4 + player.confidence * 3 + player.speed * 2;
@@ -495,17 +557,21 @@
 
       document.getElementById('practicePlan').innerHTML = buildPracticePlan(practiceGoal).map((step, idx) => `<div class="plan-step">${idx + 1}. ${step}</div>`).join('');
 
+      renderImportPreview();
+
       document.getElementById('rosterTable').innerHTML = players.map((p, idx) => `
         <tr>
           <td>
             <div><strong>${p.name}</strong></div>
             <input value="${p.positions.join(', ').replace(/"/g, '&quot;')}" onchange="updatePlayerPositions(${p.id}, this.value)" style="margin-top:6px;font-size:12px" />
           </td>
-          <td>${p.contact}</td>
-          <td>${p.speed}</td>
-          <td>${p.fielding}</td>
-          <td>${p.arm}</td>
-          <td>${p.confidence}</td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.contact}" onchange="updatePlayerField(${p.id}, 'contact', this.value)" /></td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.speed}" onchange="updatePlayerField(${p.id}, 'speed', this.value)" /></td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.fielding}" onchange="updatePlayerField(${p.id}, 'fielding', this.value)" /></td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.arm}" onchange="updatePlayerField(${p.id}, 'arm', this.value)" /></td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.confidence}" onchange="updatePlayerField(${p.id}, 'confidence', this.value)" /></td>
+          <td><input class="tiny-check" type="checkbox" ${p.pitcher ? 'checked' : ''} onchange="updatePlayerField(${p.id}, 'pitcher', this.checked)" /></td>
+          <td><input class="tiny-check" type="checkbox" ${p.catcher ? 'checked' : ''} onchange="updatePlayerField(${p.id}, 'catcher', this.checked)" /></td>
           <td>
             <div class="actions">
               <button class="icon outline" onclick="movePlayer(${idx}, -1)">↑</button>
@@ -566,6 +632,183 @@
       document.getElementById('newNotes').value = '';
       render();
     }
+
+    function updatePlayerField(id, field, value) {
+      players = players.map(p => {
+        if (p.id !== id) return p;
+        const updated = { ...p };
+        if (field === 'pitcher' || field === 'catcher') {
+          updated[field] = !!value;
+        } else {
+          updated[field] = Math.max(1, Math.min(10, Number(value || 1)));
+        }
+        return updated;
+      });
+      render();
+    }
+
+    function parseCsvText(text) {
+      const rows = [];
+      let row = [];
+      let cell = '';
+      let inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        const next = text[i + 1];
+        if (ch === '"') {
+          if (inQuotes && next === '"') {
+            cell += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === ',' && !inQuotes) {
+          row.push(cell.trim());
+          cell = '';
+        } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+          if (ch === '\r' && next === '\n') i++;
+          row.push(cell.trim());
+          if (row.some(v => v !== '')) rows.push(row);
+          row = [];
+          cell = '';
+        } else {
+          cell += ch;
+        }
+      }
+      if (cell.length || row.length) {
+        row.push(cell.trim());
+        if (row.some(v => v !== '')) rows.push(row);
+      }
+      return rows;
+    }
+
+    function normalizeName(name) {
+      return String(name || '').toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+    }
+
+    function titleCase(s) {
+      return String(s || '').replace(/_/g, ' ').replace(/\b\w/g, m => m.toUpperCase());
+    }
+
+    function safeNum(val) {
+      const n = Number(String(val).replace(/[^0-9.\-]/g, ''));
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function clampRating(n) {
+      return Math.max(1, Math.min(10, Math.round(n)));
+    }
+
+    function ratingsFromRow(rowObj, currentPlayer) {
+      const avg = safeNum(rowObj['avg'] || rowObj['AVG'] || rowObj['batting average']);
+      const obp = safeNum(rowObj['obp'] || rowObj['OBP'] || rowObj['on base percentage']);
+      const hits = safeNum(rowObj['hits'] || rowObj['H'] || rowObj['h']);
+      const rbi = safeNum(rowObj['rbi'] || rowObj['RBI']);
+      const runs = safeNum(rowObj['runs'] || rowObj['R']);
+      const sb = safeNum(rowObj['sb'] || rowObj['SB'] || rowObj['stolen bases']);
+      const innings = safeNum(rowObj['innings pitched'] || rowObj['ip'] || rowObj['IP'] || rowObj['innings']);
+      const so = safeNum(rowObj['strikeouts'] || rowObj['SO'] || rowObj['k'] || rowObj['K']);
+      const bb = safeNum(rowObj['walks'] || rowObj['BB']);
+
+      const contact = avg ? clampRating(2 + avg * 16) : currentPlayer.contact;
+      const confidence = (avg || obp || hits || rbi || runs)
+        ? clampRating((contact + clampRating(2 + obp * 12) + clampRating(1 + (hits + rbi + runs) / 3)) / 3)
+        : currentPlayer.confidence;
+      const speed = sb ? clampRating(3 + sb / 2) : currentPlayer.speed;
+      const arm = innings || so ? clampRating(3 + (so / 2) - (bb / 3)) : currentPlayer.arm;
+      const fielding = currentPlayer.fielding;
+      const pitcher = innings > 0 ? true : currentPlayer.pitcher;
+      return { contact, confidence, speed, arm, fielding, pitcher };
+    }
+
+    function buildImportPreview() {
+      const nameColumn = document.getElementById('nameColumnSelect').value || csvHeaders[0] || '';
+      if (!nameColumn || !csvRows.length) {
+        importPreview = [];
+        return;
+      }
+      const csvObjects = csvRows.map(row => Object.fromEntries(csvHeaders.map((h, i) => [h, row[i] || ''])));
+      importPreview = players.map(player => {
+        const match = csvObjects.find(obj => normalizeName(obj[nameColumn]) === normalizeName(player.name));
+        if (!match) {
+          return { playerName: player.name, csvName: '', ratings: null, status: 'No match' };
+        }
+        const ratings = ratingsFromRow(match, player);
+        return { playerName: player.name, csvName: match[nameColumn], ratings, status: 'Matched' };
+      });
+    }
+
+    function renderImportPreview() {
+      const table = document.getElementById('importPreviewTable');
+      if (!table) return;
+      if (!importPreview.length) {
+        table.innerHTML = '<tr><td colspan="4" class="subtle">No preview yet.</td></tr>';
+        return;
+      }
+      table.innerHTML = importPreview.map(item => `
+        <tr>
+          <td><strong>${item.playerName}</strong></td>
+          <td>${item.csvName || '—'}</td>
+          <td>${item.ratings ? `C ${item.ratings.contact} • Sp ${item.ratings.speed} • F ${item.ratings.fielding} • A ${item.ratings.arm} • Conf ${item.ratings.confidence}` : '—'}</td>
+          <td class="${item.status === 'Matched' ? 'status-good' : 'status-warn'}">${item.status}</td>
+        </tr>
+      `).join('');
+    }
+
+    function populateNameColumnSelect() {
+      const select = document.getElementById('nameColumnSelect');
+      if (!select) return;
+      const opts = csvHeaders.map(h => `<option value="${h}">${titleCase(h)}</option>`).join('');
+      select.innerHTML = opts || '<option value="">No columns found</option>';
+      const best = csvHeaders.find(h => ['player', 'name', 'player name'].includes(normalizeName(h)));
+      if (best) select.value = best;
+    }
+
+    function handleCsvParse() {
+      const fileInput = document.getElementById('csvFileInput');
+      const file = fileInput && fileInput.files && fileInput.files[0];
+      if (!file) {
+        document.getElementById('importStatus').textContent = 'Choose a CSV file first.';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const rows = parseCsvText(evt.target.result);
+        if (!rows.length) {
+          document.getElementById('importStatus').textContent = 'CSV was empty or could not be read.';
+          csvRows = [];
+          csvHeaders = [];
+          importPreview = [];
+          renderImportPreview();
+          return;
+        }
+        csvHeaders = rows[0];
+        csvRows = rows.slice(1).filter(r => r.length);
+        populateNameColumnSelect();
+        buildImportPreview();
+        renderImportPreview();
+        const matched = importPreview.filter(x => x.status === 'Matched').length;
+        document.getElementById('importStatus').textContent = `CSV parsed. ${csvRows.length} rows found. ${matched} roster matches ready.`;
+      };
+      reader.readAsText(file);
+    }
+
+    function applyCsvImport() {
+      if (!importPreview.length) {
+        document.getElementById('importStatus').textContent = 'Parse a CSV first.';
+        return;
+      }
+      players = players.map(player => {
+        const preview = importPreview.find(p => p.playerName === player.name && p.status === 'Matched');
+        if (!preview || !preview.ratings) return player;
+        return { ...player, ...preview.ratings };
+      });
+      render();
+      const applied = importPreview.filter(x => x.status === 'Matched').length;
+      document.getElementById('importStatus').textContent = `Import applied. ${applied} players updated from CSV.`;
+    }
+
+
     function addEvent(type, rbi=false) {
       const batter = players.find(p => p.id == selectedBatterId);
       if (!batter) return;
@@ -586,6 +829,9 @@
     document.getElementById('batterSelect').addEventListener('change', (e) => { selectedBatterId = Number(e.target.value); render(); });
     document.getElementById('inningsInput').addEventListener('input', (e) => { inningsPitched = Number(e.target.value || 0); render(); });
     document.getElementById('restDaysInput').addEventListener('input', (e) => { restDays = Number(e.target.value || 0); render(); });
+    document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
+    document.getElementById('applyCsvBtn').addEventListener('click', applyCsvImport);
+    document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
 
     renderTabs();
     render();
