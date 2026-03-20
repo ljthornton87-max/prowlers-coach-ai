@@ -846,6 +846,20 @@ console.log("client:", window.supabaseClient)
 
     renderTabs();
     render();
+    async function loadPlayersFromDb() {
+  const result = await window.supabaseClient
+    .from('players')
+    .select('*')
+
+  if (result.error) {
+    console.error('Load players error:', result.error)
+    return
+  }
+
+  console.log('Players from DB:', result.data)
+}
+
+loadPlayersFromDb()
   </script>
 </body>
 </html>
