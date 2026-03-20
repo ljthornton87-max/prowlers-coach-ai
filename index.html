@@ -6,12 +6,14 @@
   <title>Prowlers Coach AI</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 const SUPABASE_URL = "https://pzdxoadhqhnpfsqjakel.supabase.co"
 const SUPABASE_KEY = "sb_publishable_TTkJUAdyPdyijxypmsYDQw_EkN_-C97"
 
 window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+console.log("lib:", window.supabase)
+console.log("client:", window.supabaseClient)
 </script>
   <style>
     :root {
