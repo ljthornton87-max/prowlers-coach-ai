@@ -650,12 +650,11 @@ console.log("client:", window.supabaseClient)
 
     const updated = { ...p };
 
-    if (field === 'pitcher' || field === 'catcher') {
-      updated[field] = value;
-    } else {
-      updated[field] = Math.max(1, Math.min(10, Number(value || 1)));
-    }
-
+   if (field === 'pitcher' || field === 'catcher') {
+  updated[field] = !!value;
+} else {
+  updated[field] = Math.max(1, Math.min(10, Number(value || 1)));
+}
     return updated;
   });
 
