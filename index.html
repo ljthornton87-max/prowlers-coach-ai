@@ -856,8 +856,8 @@ console.log("client:", window.supabaseClient)
     return
   }
 
-  console.log('Players from DB:', result.data)
-}
+players = result.data
+render()
 
 loadPlayersFromDb()
   </script>
