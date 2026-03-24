@@ -574,9 +574,7 @@ console.log("client:", window.supabaseClient)
         <tr>
           <td>
             <div><strong>${p.name}</strong></div>
-<input value="${(Array.isArray(p.positions) ? p.positions : String(p.positions || '').split(',')).map(x => x.trim()).filter(Boolean).join(', ').replace(/"/g, '&quot;')}" onchange="updatePlayerPositions(${p.id}, this.value)" style="margin-top:6px;font-size:12px" />          </td>
-          <td><input class="compact-input" type="number" min="1" max="10" value="${p.contact}" onchange="updatePlayerField(${p.id}, 'contact', this.value)" /></td>
-          <td><input class="compact-input" type="number" min="1" max="10" value="${p.speed}" onchange="updatePlayerField(${p.id}, 'speed', this.value)" /></td>
+            <input value="${((Array.isArray(p.positions) ? p.positions : String(p.positions || '').split(',')).map(x => x.trim()).filter(Boolean).join(', ').replace(/"/g, '&quot;'))}" onchange="updatePlayerPositions(${p.id}, this.value)" style="margin-top:6px;font-size:12px" />
           <td><input class="compact-input" type="number" min="1" max="10" value="${p.fielding}" onchange="updatePlayerField(${p.id}, 'fielding', this.value)" /></td>
           <td><input class="compact-input" type="number" min="1" max="10" value="${p.arm}" onchange="updatePlayerField(${p.id}, 'arm', this.value)" /></td>
           <td><input class="compact-input" type="number" min="1" max="10" value="${p.confidence}" onchange="updatePlayerField(${p.id}, 'confidence', this.value)" /></td>
