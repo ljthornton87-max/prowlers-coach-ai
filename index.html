@@ -500,15 +500,6 @@ console.log("client:", window.supabaseClient)
         };
       });
     }
-
-    function formatPositions(positions) {
-  return (Array.isArray(positions)
-    ? positions
-    : String(positions || '').split(',')
-  )
-    .map(x => x.trim())
-    .filter(Boolean)
-    .join(', ');
 }
     rosterTable
       const lineup = getLineup();
@@ -585,8 +576,7 @@ console.log("client:", window.supabaseClient)
         <tr>
           <td>
             <div><strong>${p.name}</strong></div>
-<input value="${formatPositions(p.positions).replace(/"/g, '&quot;')}" onchange="updatePlayerPositions(${p.id}, this.value)" style="margin-top:6px;font-size:12px" />          <td><input class="compact-input" type="number" min="1" max="10" value="${p.fielding}" onchange="updatePlayerField(${p.id}, 'fielding', this.value)" /></td>
-          <td><input class="compact-input" type="number" min="1" max="10" value="${p.arm}" onchange="updatePlayerField(${p.id}, 'arm', this.value)" /></td>
+<input value="${p.positions.join(', ').replace(/"/g, '&quot;')}" onchange="updatePlayerPositions(${p.id}, this.value)" style="margin-top:6px;font-size:12px" />          <td><input class="compact-input" type="number" min="1" max="10" value="${p.arm}" onchange="updatePlayerField(${p.id}, 'arm', this.value)" /></td>
           <td><input class="compact-input" type="number" min="1" max="10" value="${p.confidence}" onchange="updatePlayerField(${p.id}, 'confidence', this.value)" /></td>
           <td><input class="tiny-check" type="checkbox" ${p.pitcher ? 'checked' : ''} onchange="updatePlayerField(${p.id}, 'pitcher', this.checked)" /></td>
           <td><input class="tiny-check" type="checkbox" ${p.catcher ? 'checked' : ''} onchange="updatePlayerField(${p.id}, 'catcher', this.checked)" /></td>
@@ -877,12 +867,7 @@ async function loadPlayersFromDb() {
     return;
   }
 
-players = result.data.map(p => ({
-  ...p,
-  positions: Array.isArray(p.positions)
-    ? p.positions
-    : String(p.positions || '').split(',').map(x => x.trim()).filter(Boolean)
-}));
+players = result.data;
 render();
 }
 
