@@ -848,29 +848,32 @@ console.log("client:", window.supabaseClient)
     document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
 
     renderTabs();
-    render();
-    async function loadPlayersFromDb() {
+render();
+
+async function loadPlayersFromDb() {
   const result = await window.supabaseClient
     .from('players')
-    .select('*')
+    .select('*');
 
   if (result.error) {
-    console.error('Load players error:', result.error)
-    return
+    console.error('Load players error:', result.error);
+    return;
   }
 
-players = result.data
-render()
+  players = result.data;
+  render();
+}
 
-loadPlayersFromDb()
-      async function updatePlayer(name, field, value) {
+loadPlayersFromDb();
+
+async function updatePlayer(name, field, value) {
   const { error } = await window.supabaseClient
     .from('players')
     .update({ [field]: value })
-    .eq('name', name)
+    .eq('name', name);
 
   if (error) {
-    console.error('Update failed:', error)
+    console.error('Update failed:', error);
   }
 }
   </script>
