@@ -644,7 +644,7 @@ console.log("client:", window.supabaseClient)
       render();
     }
 
-    function updatePlayerField(id, field, value) {
+   async function updatePlayerField(id, field, value) {
   players = players.map(p => {
     if (p.id !== id) return p;
 
@@ -660,6 +660,16 @@ console.log("client:", window.supabaseClient)
   });
 
   render();
+
+  const player = players.find(p => p.id === id);
+  if (!player) return;
+
+  const dbValue =
+    field === 'pitcher' || field === 'catcher'
+      ? !!value
+      : Number(value);
+
+  await updatePlayer(player.name, field, dbValue);
 }
     function parseCsvText(text) {
       const rows = [];
