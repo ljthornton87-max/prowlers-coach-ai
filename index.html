@@ -611,10 +611,12 @@ console.log("client:", window.supabaseClient)
       }
       render();
     }
-    function updatePlayerPositions(id, value) {
-      players = players.map(p => p.id === id ? { ...p, positions: value.split(',').map(x => x.trim()).filter(Boolean) } : p);
-      render();
-   async function addPlayer() {
+function updatePlayerPositions(id, value) {
+  players = players.map(p => p.id === id ? { ...p, positions: value.split(',').map(x => x.trim()).filter(Boolean) } : p);
+  render();
+}
+
+async function addPlayer() {
   const name = document.getElementById('newName').value.trim();
   if (!name) return;
 
@@ -647,7 +649,6 @@ console.log("client:", window.supabaseClient)
   document.getElementById('newCatcher').checked = false;
   document.getElementById('newNotes').value = '';
 }
-
     function updatePlayerField(id, field, value) {
       players = players.map(p => {
         if (p.id !== id) return p;
