@@ -638,16 +638,18 @@ async function addPlayer() {
 
   console.log('Saved player:', data);
 
-  document.getElementById('newName').value = '';
-  document.getElementById('newContact').value = 5;
-  document.getElementById('newSpeed').value = 5;
-  document.getElementById('newFielding').value = 5;
-  document.getElementById('newArm').value = 5;
-  document.getElementById('newConfidence').value = 5;
-  document.getElementById('newPositions').value = 'OF';
-  document.getElementById('newPitcher').checked = false;
-  document.getElementById('newCatcher').checked = false;
-  document.getElementById('newNotes').value = '';
+await loadPlayersFromDB();
+
+document.getElementById('newName').value = '';
+document.getElementById('newContact').value = 5;
+document.getElementById('newSpeed').value = 5;
+document.getElementById('newFielding').value = 5;
+document.getElementById('newArm').value = 5;
+document.getElementById('newConfidence').value = 5;
+document.getElementById('newPositions').value = 'OF';
+document.getElementById('newPitcher').checked = false;
+document.getElementById('newCatcher').checked = false;
+document.getElementById('newNotes').value = '';
 }
     async function loadPlayersFromDB() {
   const { data, error } = await supabaseClient
