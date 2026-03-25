@@ -644,40 +644,18 @@ console.log("client:", window.supabaseClient)
       render();
     }
 
-    async function updatePlayerField(id, field, value) {
-  players = players.map(p => {
-    if (p.id !== id) return p;
-
-    const updated = { ...p };
-
-    if (field === 'pitcher' || field === 'catcher') {
-      updated[field] = value;
-    } else {
-      updated[field] = Math.max(1, Math.min(10, Number(value || 1)));
-    }
-
-    return updated;
-  });
-
-  render();
-
-  const player = players.find(p => p.id === id);
-  if (!player) return;
-
-  const dbValue =
-    field === 'pitcher' || field === 'catcher'
-      ? !!value
-      : Number(value);
-
-  const { error } = await window.supabaseClient
-    .from('players')
-    .update({ [field]: dbValue })
-    .eq('name', player.name);
-
-  if (error) {
-    console.error('Update failed:', error);
-  }
-}
+    function updatePlayerField(id, field, value) {
+      players = players.map(p => {
+        if (p.id !== id) return p;
+        const updated = { ...p };
+        if (field === 'pitcher' || field === 'catcher') {
+          updated[field] = !!value;
+        } else {
+          updated[field] = Math.max(1, Math.min(10, Number(value || 1)));
+        }
+        return updated;
+      });
+      render();
     }
 
     function parseCsvText(text) {
@@ -882,16 +860,6 @@ players = result.data
 render()
 
 loadPlayersFromDb()
-      async function updatePlayer(name, field, value) {
-  const { error } = await window.supabaseClient
-    .from('players')
-    .update({ [field]: value })
-    .eq('name', name)
-
-  if (error) {
-    console.error('Update failed:', error)
-  }
-}
   </script>
 </body>
 </html>
