@@ -681,19 +681,25 @@ document.getElementById('newNotes').value = '';
   render();
 }
 
-    function updatePlayerField(id, field, value) {
-      players = players.map(p => {
-        if (p.id !== id) return p;
-        const updated = { ...p };
-        if (field === 'pitcher' || field === 'catcher') {
-          updated[field] = !!value;
-        } else {
-          updated[field] = Math.max(1, Math.min(10, Number(value || 1)));
-        }
-        return updated;
-      });
-      render();
-    }
+ async function updatePlayerField(id, field, value) {
+  let dbField = field;
+  let dbValue = value;
+
+  if (field === 'contact') dbField = 'number';
+  if (field === 'pitcher' || field === 'catcher') dbValue = !!value;
+
+  const { error } = await supabaseClient
+    .from('players')
+    .update({ [dbField]: dbValue })
+    .eq('id', id);
+
+  if (error) {
+    console.error('Supabase update error:', error);
+    return;
+  }
+
+  await loadPlayersFromDB();
+}
 
     function parseCsvText(text) {
       const rows = [];
