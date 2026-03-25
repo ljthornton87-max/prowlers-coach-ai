@@ -574,15 +574,15 @@ console.log("client:", window.supabaseClient)
         <tr>
           <td>
             <div><strong>${p.name}</strong></div>
-            <input value="${p.positions.join(', ').replace(/"/g, '&quot;')}" onchange="updatePlayerPositions(${p.id}, this.value)" style="margin-top:6px;font-size:12px" />
+            <input value="${p.positions.join(', ').replace(/"/g, '&quot;')}" onchange="updatePlayerPositions('${p.id}', this.value)" style="margin-top:6px;font-size:12px" />
           </td>
-          <td><input class="compact-input" type="number" min="1" max="10" value="${p.contact}" onchange="updatePlayerField(${p.id}, 'contact', this.value)" /></td>
-          <td><input class="compact-input" type="number" min="1" max="10" value="${p.speed}" onchange="updatePlayerField(${p.id}, 'speed', this.value)" /></td>
-          <td><input class="compact-input" type="number" min="1" max="10" value="${p.fielding}" onchange="updatePlayerField(${p.id}, 'fielding', this.value)" /></td>
-          <td><input class="compact-input" type="number" min="1" max="10" value="${p.arm}" onchange="updatePlayerField(${p.id}, 'arm', this.value)" /></td>
-          <td><input class="compact-input" type="number" min="1" max="10" value="${p.confidence}" onchange="updatePlayerField(${p.id}, 'confidence', this.value)" /></td>
-          <td><input class="tiny-check" type="checkbox" ${p.pitcher ? 'checked' : ''} onchange="updatePlayerField(${p.id}, 'pitcher', this.checked)" /></td>
-          <td><input class="tiny-check" type="checkbox" ${p.catcher ? 'checked' : ''} onchange="updatePlayerField(${p.id}, 'catcher', this.checked)" /></td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.contact}" onchange="updatePlayerField('${p.id}', 'contact', this.value)" /></td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.speed}" onchange="updatePlayerField('${p.id}', 'speed', this.value)" /></td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.fielding}" onchange="updatePlayerField('${p.id}', 'fielding', this.value)" /></td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.arm}" onchange="updatePlayerField('${p.id}', 'arm', this.value)" /></td>
+          <td><input class="compact-input" type="number" min="1" max="10" value="${p.confidence}" onchange="updatePlayerField('${p.id}', 'confidence', this.value)" /></td>
+          <td><input class="tiny-check" type="checkbox" ${p.pitcher ? 'checked' : ''} onchange="updatePlayerField('${p.id}', 'pitcher', this.checked)" /></td>
+          <td><input class="tiny-check" type="checkbox" ${p.catcher ? 'checked' : ''} onchange="updatePlayerField('${p.id}', 'catcher', this.checked)" /></td>
           <td>
             <div class="actions">
               <button class="icon outline" onclick="movePlayer(${idx}, -1)">↑</button>
