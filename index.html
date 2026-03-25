@@ -489,166 +489,147 @@ console.log("client:", window.supabaseClient)
       });
       return summary;
     }
-    function renderTabs() {
-      
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.onclick = () => {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-          btn.classList.add('active');
-          document.getElementById(btn.dataset.tab).classList.add('active');
-        };
-      });
-    }
+<script>
+const SUPABASE_URL = "https://pzdxoadhqhnpfsqjakel.supabase.co";
+const SUPABASE_KEY = "sb_publishable_TTkJUAdyPdyijxypmsYDQw_EkN_-C97";
+
+window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+console.log("lib:", window.supabase);
+console.log("client:", window.supabaseClient);
+
+function formatPositions(positions) {
+  return (Array.isArray(positions) ? positions : String(positions || "").split(","))
+    .map(x => x.trim())
+    .filter(Boolean)
+    .join(", ");
 }
-    rosterTable
-      const lineup = getLineup();
-      const defense = getDefense(lineup.starters);
-      const pStatus = pitcherStatus();
-      const pitcher = players.find(p => p.id == selectedPitcherId) || players.find(p => p.pitcher) || players[0];
-      const summary = hitterSummary();
 
-      document.getElementById('oppLabel').textContent = document.getElementById('opponentInput').value || 'Weekend Opponent';
-      document.getElementById('leadoffName').textContent = lineup.starters[0]?.name || '—';
-      document.getElementById('dashPitcherName').textContent = pitcher?.name || '—';
-      document.getElementById('dashPitchLabel').textContent = pStatus.label;
-      document.getElementById('dashPitchCount').textContent = pitchCount;
-      document.getElementById('dashPitchText').textContent = pStatus.text;
-      document.getElementById('dashBar').style.width = pStatus.value + '%';
-      document.getElementById('dashPracticeGoal').textContent = practiceGoal;
+function renderTabs() {
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.tab).classList.add("active");
+    };
+  });
+}
 
-      document.getElementById('pitchCountBig').textContent = pitchCount;
-      document.getElementById('pitchText').textContent = pStatus.text;
-      document.getElementById('pitchBar').style.width = pStatus.value + '%';
-      document.getElementById('inningsVal').textContent = inningsPitched;
-      document.getElementById('restDaysVal').textContent = restDays;
+function render() {
+  const lineup = getLineup();
+  const defense = getDefense(lineup.starters);
+  const pStatus = pitcherStatus();
+  const pitcher =
+    players.find(p => p.id == selectedPitcherId) ||
+    players.find(p => p.pitcher) ||
+    players[0];
+  const summary = hitterSummary();
 
-      document.getElementById('hittingCues').innerHTML = hittingCues.map(c => `<div class="cue">${c}</div>`).join('');
-      document.getElementById('lineupTable').innerHTML = lineup.starters.map((p, idx) => `
-        <tr>
-          <td>${idx + 1}</td>
-          <td><strong>${p.name}</strong></td>
-          <td>${defense[idx]?.pos || ''}</td>
-          <td class="subtle">Contact ${p.contact}/10, Speed ${p.speed}/10, Confidence ${p.confidence}/10</td>
-        </tr>
-      `).join('');
+  document.getElementById("oppLabel").textContent =
+    document.getElementById("opponentInput").value || "Weekend Opponent";
+  document.getElementById("leadoffName").textContent = lineup.starters[0]?.name || "—";
+  document.getElementById("dashPitcherName").textContent = pitcher?.name || "—";
+  document.getElementById("dashPitchLabel").textContent = pStatus.label;
+  document.getElementById("dashPitchCount").textContent = pitchCount;
+  document.getElementById("dashPitchText").textContent = pStatus.text;
+  document.getElementById("dashBar").style.width = pStatus.value + "%";
+  document.getElementById("dashPracticeGoal").textContent = practiceGoal;
 
-      const benchBox = document.getElementById('benchBox');
-      if (lineup.bench.length) {
-        benchBox.style.display = 'block';
-        benchBox.innerHTML = `<strong>Bench / rotate in:</strong> ${lineup.bench.map(p => p.name).join(', ')}`;
-      } else {
-        benchBox.style.display = 'none';
-      }
+  document.getElementById("pitchCountBig").textContent = pitchCount;
+  document.getElementById("pitchText").textContent = pStatus.text;
+  document.getElementById("pitchBar").style.width = pStatus.value + "%";
+  document.getElementById("inningsVal").textContent = inningsPitched;
+  document.getElementById("restDaysVal").textContent = restDays;
 
-      document.getElementById('defenseList').innerHTML = defense.map((d, idx) => `
+  document.getElementById("hittingCues").innerHTML = hittingCues
+    .map(c => `<div class="cue">${c}</div>`)
+    .join("");
+
+  document.getElementById("lineupTable").innerHTML = lineup.starters
+    .map((p, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td><strong>${p.name}</strong></td>
+        <td>${defense[idx]?.pos || ""}</td>
+        <td class="subtle">Contact ${p.contact}/10, Speed ${p.speed}/10, Confidence ${p.confidence}/10</td>
+      </tr>
+    `)
+    .join("");
+
+  const benchBox = document.getElementById("benchBox");
+  if (lineup.bench.length) {
+    benchBox.style.display = "block";
+    benchBox.innerHTML = `<strong>Bench / rotate in:</strong> ${lineup.bench.map(p => p.name).join(", ")}`;
+  } else {
+    benchBox.style.display = "none";
+  }
+
+  document.getElementById("defenseList").innerHTML =
+    defense
+      .map((d, idx) => `
         <div class="note" style="display:flex;justify-content:space-between;align-items:center">
           <span><strong>${d.pos}</strong></span>
           <span>${d.name}</span>
           <span class="small">#${idx + 1} hitter</span>
         </div>
-      `).join('') + `<div class="subtle">Use this as your starting point, then adjust for confidence, matchup, and innings limits.</div>`;
+      `)
+      .join("") +
+    `<div class="subtle">Use this as your starting point, then adjust for confidence, matchup, and innings limits.</div>`;
 
-      const pitcherOptions = players.filter(p => p.pitcher).map(p => `<option value="${p.id}" ${p.id == selectedPitcherId ? 'selected' : ''}>${p.name}</option>`).join('');
-      document.getElementById('pitcherSelect').innerHTML = pitcherOptions || '<option value="">No pitchers marked yet</option>';
-      const batterOptions = players.map(p => `<option value="${p.id}" ${p.id == selectedBatterId ? 'selected' : ''}>${p.name}</option>`).join('');
-      document.getElementById('batterSelect').innerHTML = batterOptions;
+  document.getElementById("snapshotTable").innerHTML = players
+    .map(p => {
+      const row = summary[p.id] || { hits: 0, outs: 0, rbis: 0 };
+      const confidenceRead =
+        row.hits > row.outs ? "Up" : row.outs >= 2 ? "Needs win" : "Steady";
+      return `<tr><td><strong>${p.name}</strong></td><td>${row.hits}</td><td>${row.outs}</td><td>${row.rbis}</td><td>${confidenceRead}</td></tr>`;
+    })
+    .join("");
 
-      const log = document.getElementById('eventLog');
-      log.innerHTML = eventLog.length ? eventLog.map(e => `
-        <div class="event">
-          <div><div><strong>${e.playerName}</strong></div><div class="subtle">${e.type}${e.rbi ? ' • RBI' : ''}</div></div>
-          <div class="small">${e.time}</div>
-        </div>
-      `).join('') : '<div class="subtle">No events logged yet.</div>';
+  document.getElementById("practicePlan").innerHTML = buildPracticePlan(practiceGoal)
+    .map((step, idx) => `<div class="plan-step">${idx + 1}. ${step}</div>`)
+    .join("");
 
-      document.getElementById('snapshotTable').innerHTML = players.map(p => {
-        const row = summary[p.id] || { hits: 0, outs: 0, rbis: 0 };
-        const confidenceRead = row.hits > row.outs ? "Up" : row.outs >= 2 ? "Needs win" : "Steady";
-        return `<tr><td><strong>${p.name}</strong></td><td>${row.hits}</td><td>${row.outs}</td><td>${row.rbis}</td><td>${confidenceRead}</td></tr>`;
-      }).join('');
+  renderImportPreview();
 
-      document.getElementById('practicePlan').innerHTML = buildPracticePlan(practiceGoal).map((step, idx) => `<div class="plan-step">${idx + 1}. ${step}</div>`).join('');
+  document.getElementById("rosterTable").innerHTML = players
+    .map((p, idx) => `
+      <tr>
+        <td>
+          <div><strong>${p.name}</strong></div>
+          <input
+            value="${formatPositions(p.positions).replace(/"/g, "&quot;")}"
+            onchange="updatePlayerPositions(${p.id}, this.value)"
+            style="margin-top:6px;font-size:12px"
+          />
+        </td>
+        <td><input class="compact-input" type="number" min="1" max="10" value="${p.contact}" onchange="updatePlayerField(${p.id}, 'contact', this.value)" /></td>
+        <td><input class="compact-input" type="number" min="1" max="10" value="${p.speed}" onchange="updatePlayerField(${p.id}, 'speed', this.value)" /></td>
+        <td><input class="compact-input" type="number" min="1" max="10" value="${p.fielding}" onchange="updatePlayerField(${p.id}, 'fielding', this.value)" /></td>
+        <td><input class="compact-input" type="number" min="1" max="10" value="${p.arm}" onchange="updatePlayerField(${p.id}, 'arm', this.value)" /></td>
+        <td><input class="compact-input" type="number" min="1" max="10" value="${p.confidence}" onchange="updatePlayerField(${p.id}, 'confidence', this.value)" /></td>
+        <td><input class="tiny-check" type="checkbox" ${p.pitcher ? "checked" : ""} onchange="updatePlayerField(${p.id}, 'pitcher', this.checked)" /></td>
+        <td><input class="tiny-check" type="checkbox" ${p.catcher ? "checked" : ""} onchange="updatePlayerField(${p.id}, 'catcher', this.checked)" /></td>
+        <td>
+          <div class="actions">
+            <button class="icon outline" onclick="movePlayer(${idx}, -1)">↑</button>
+            <button class="icon outline" onclick="movePlayer(${idx}, 1)">↓</button>
+          </div>
+        </td>
+        <td><button class="danger" onclick="removePlayer(${p.id})">Remove</button></td>
+      </tr>
+    `)
+    .join("");
+}
 
-      renderImportPreview();
-
-      document.getElementById('rosterTable').innerHTML = players.map((p, idx) => `
-        <tr>
-          <td>
-            <div><strong>${p.name}</strong></div>
-<input value="${p.positions.join(', ').replace(/"/g, '&quot;')}" onchange="updatePlayerPositions(${p.id}, this.value)" style="margin-top:6px;font-size:12px" />          <td><input class="compact-input" type="number" min="1" max="10" value="${p.arm}" onchange="updatePlayerField(${p.id}, 'arm', this.value)" /></td>
-          <td><input class="compact-input" type="number" min="1" max="10" value="${p.confidence}" onchange="updatePlayerField(${p.id}, 'confidence', this.value)" /></td>
-          <td><input class="tiny-check" type="checkbox" ${p.pitcher ? 'checked' : ''} onchange="updatePlayerField(${p.id}, 'pitcher', this.checked)" /></td>
-          <td><input class="tiny-check" type="checkbox" ${p.catcher ? 'checked' : ''} onchange="updatePlayerField(${p.id}, 'catcher', this.checked)" /></td>
-          <td>
-            <div class="actions">
-              <button class="icon outline" onclick="movePlayer(${idx}, -1)">↑</button>
-              <button class="icon outline" onclick="movePlayer(${idx}, 1)">↓</button>
-            </div>
-          </td>
-          <td><button class="danger" onclick="removePlayer(${p.id})">Remove</button></td>
-        </tr>
-      `).join('');
-    }
-
-    function adjustPitch(n) { pitchCount = Math.max(0, pitchCount + n); render(); }
-    function resetPitch() { pitchCount = 0; render(); }
-    function movePlayer(index, direction) {
-      const newIndex = index + direction;
-      if (newIndex < 0 || newIndex >= players.length) return;
-      [players[index], players[newIndex]] = [players[newIndex], players[index]];
-      render();
-    }
-    function removePlayer(id) {
-      players = players.filter(p => p.id !== id);
-      if (!players.find(p => p.id == selectedBatterId) && players[0]) selectedBatterId = players[0].id;
-      if (!players.find(p => p.id == selectedPitcherId)) {
-        const fallback = players.find(p => p.pitcher) || players[0];
-        selectedPitcherId = fallback ? fallback.id : null;
-      }
-      render();
-    }
-    function updatePlayerPositions(id, value) {
-      players = players.map(p => p.id === id ? { ...p, positions: value.split(',').map(x => x.trim()).filter(Boolean) } : p);
-      render();
-    }
-    function addPlayer() {
-      const name = document.getElementById('newName').value.trim();
-      if (!name) return;
-      players.push({
-        id: Date.now(),
-        name,
-        contact: Number(document.getElementById('newContact').value || 5),
-        speed: Number(document.getElementById('newSpeed').value || 5),
-        fielding: Number(document.getElementById('newFielding').value || 5),
-        arm: Number(document.getElementById('newArm').value || 5),
-        confidence: Number(document.getElementById('newConfidence').value || 5),
-        pitcher: document.getElementById('newPitcher').checked,
-        catcher: document.getElementById('newCatcher').checked,
-        positions: document.getElementById('newPositions').value.split(',').map(x => x.trim()).filter(Boolean),
-        notes: document.getElementById('newNotes').value
-      });
-      document.getElementById('newName').value = '';
-      document.getElementById('newContact').value = 5;
-      document.getElementById('newSpeed').value = 5;
-      document.getElementById('newFielding').value = 5;
-      document.getElementById('newArm').value = 5;
-      document.getElementById('newConfidence').value = 5;
-      document.getElementById('newPositions').value = 'OF';
-      document.getElementById('newPitcher').checked = false;
-      document.getElementById('newCatcher').checked = false;
-      document.getElementById('newNotes').value = '';
-      render();
-    }
-
-   async function updatePlayerField(id, field, value) {
+async function updatePlayerField(id, field, value) {
   players = players.map(p => {
     if (p.id !== id) return p;
 
     const updated = { ...p };
 
-    if (field === 'pitcher' || field === 'catcher') {
-      updated[field] = value;
+    if (field === "pitcher" || field === "catcher") {
+      updated[field] = !!value;
     } else {
       updated[field] = Math.max(1, Math.min(10, Number(value || 1)));
     }
@@ -662,230 +643,84 @@ console.log("client:", window.supabaseClient)
   if (!player) return;
 
   const dbValue =
-    field === 'pitcher' || field === 'catcher'
+    field === "pitcher" || field === "catcher"
       ? !!value
       : Number(value);
 
   await updatePlayer(player.name, field, dbValue);
 }
-    function parseCsvText(text) {
-      const rows = [];
-      let row = [];
-      let cell = '';
-      let inQuotes = false;
-      for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
-        const next = text[i + 1];
-        if (ch === '"') {
-          if (inQuotes && next === '"') {
-            cell += '"';
-            i++;
-          } else {
-            inQuotes = !inQuotes;
-          }
-        } else if (ch === ',' && !inQuotes) {
-          row.push(cell.trim());
-          cell = '';
-        } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
-          if (ch === '\r' && next === '\n') i++;
-          row.push(cell.trim());
-          if (row.some(v => v !== '')) rows.push(row);
-          row = [];
-          cell = '';
-        } else {
-          cell += ch;
-        }
-      }
-      if (cell.length || row.length) {
-        row.push(cell.trim());
-        if (row.some(v => v !== '')) rows.push(row);
-      }
-      return rows;
-    }
 
-    function normalizeName(name) {
-      return String(name || '').toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
-    }
+document.getElementById("opponentInput").addEventListener("input", render);
+document.getElementById("practiceGoalInput").addEventListener("input", e => {
+  practiceGoal = e.target.value;
+  render();
+});
+document.getElementById("pitcherSelect").addEventListener("change", e => {
+  selectedPitcherId = Number(e.target.value);
+  render();
+});
+document.getElementById("batterSelect").addEventListener("change", e => {
+  selectedBatterId = Number(e.target.value);
+  render();
+});
+document.getElementById("inningsInput").addEventListener("input", e => {
+  inningsPitched = Number(e.target.value || 0);
+  render();
+});
+document.getElementById("restDaysInput").addEventListener("input", e => {
+  restDays = Number(e.target.value || 0);
+  render();
+});
+document.getElementById("parseCsvBtn").addEventListener("click", handleCsvParse);
+document.getElementById("applyCsvBtn").addEventListener("click", applyCsvImport);
+document.getElementById("nameColumnSelect").addEventListener("change", () => {
+  buildImportPreview();
+  renderImportPreview();
+});
 
-    function titleCase(s) {
-      return String(s || '').replace(/_/g, ' ').replace(/\b\w/g, m => m.toUpperCase());
-    }
-
-    function safeNum(val) {
-      const n = Number(String(val).replace(/[^0-9.\-]/g, ''));
-      return Number.isFinite(n) ? n : 0;
-    }
-
-    function clampRating(n) {
-      return Math.max(1, Math.min(10, Math.round(n)));
-    }
-
-    function ratingsFromRow(rowObj, currentPlayer) {
-      const avg = safeNum(rowObj['avg'] || rowObj['AVG'] || rowObj['batting average']);
-      const obp = safeNum(rowObj['obp'] || rowObj['OBP'] || rowObj['on base percentage']);
-      const hits = safeNum(rowObj['hits'] || rowObj['H'] || rowObj['h']);
-      const rbi = safeNum(rowObj['rbi'] || rowObj['RBI']);
-      const runs = safeNum(rowObj['runs'] || rowObj['R']);
-      const sb = safeNum(rowObj['sb'] || rowObj['SB'] || rowObj['stolen bases']);
-      const innings = safeNum(rowObj['innings pitched'] || rowObj['ip'] || rowObj['IP'] || rowObj['innings']);
-      const so = safeNum(rowObj['strikeouts'] || rowObj['SO'] || rowObj['k'] || rowObj['K']);
-      const bb = safeNum(rowObj['walks'] || rowObj['BB']);
-
-      const contact = avg ? clampRating(2 + avg * 16) : currentPlayer.contact;
-      const confidence = (avg || obp || hits || rbi || runs)
-        ? clampRating((contact + clampRating(2 + obp * 12) + clampRating(1 + (hits + rbi + runs) / 3)) / 3)
-        : currentPlayer.confidence;
-      const speed = sb ? clampRating(3 + sb / 2) : currentPlayer.speed;
-      const arm = innings || so ? clampRating(3 + (so / 2) - (bb / 3)) : currentPlayer.arm;
-      const fielding = currentPlayer.fielding;
-      const pitcher = innings > 0 ? true : currentPlayer.pitcher;
-      return { contact, confidence, speed, arm, fielding, pitcher };
-    }
-
-    function buildImportPreview() {
-      const nameColumn = document.getElementById('nameColumnSelect').value || csvHeaders[0] || '';
-      if (!nameColumn || !csvRows.length) {
-        importPreview = [];
-        return;
-      }
-      const csvObjects = csvRows.map(row => Object.fromEntries(csvHeaders.map((h, i) => [h, row[i] || ''])));
-      importPreview = players.map(player => {
-        const match = csvObjects.find(obj => normalizeName(obj[nameColumn]) === normalizeName(player.name));
-        if (!match) {
-          return { playerName: player.name, csvName: '', ratings: null, status: 'No match' };
-        }
-        const ratings = ratingsFromRow(match, player);
-        return { playerName: player.name, csvName: match[nameColumn], ratings, status: 'Matched' };
-      });
-    }
-
-    function renderImportPreview() {
-      const table = document.getElementById('importPreviewTable');
-      if (!table) return;
-      if (!importPreview.length) {
-        table.innerHTML = '<tr><td colspan="4" class="subtle">No preview yet.</td></tr>';
-        return;
-      }
-      table.innerHTML = importPreview.map(item => `
-        <tr>
-          <td><strong>${item.playerName}</strong></td>
-          <td>${item.csvName || '—'}</td>
-          <td>${item.ratings ? `C ${item.ratings.contact} • Sp ${item.ratings.speed} • F ${item.ratings.fielding} • A ${item.ratings.arm} • Conf ${item.ratings.confidence}` : '—'}</td>
-          <td class="${item.status === 'Matched' ? 'status-good' : 'status-warn'}">${item.status}</td>
-        </tr>
-      `).join('');
-    }
-
-    function populateNameColumnSelect() {
-      const select = document.getElementById('nameColumnSelect');
-      if (!select) return;
-      const opts = csvHeaders.map(h => `<option value="${h}">${titleCase(h)}</option>`).join('');
-      select.innerHTML = opts || '<option value="">No columns found</option>';
-      const best = csvHeaders.find(h => ['player', 'name', 'player name'].includes(normalizeName(h)));
-      if (best) select.value = best;
-    }
-
-    function handleCsvParse() {
-      const fileInput = document.getElementById('csvFileInput');
-      const file = fileInput && fileInput.files && fileInput.files[0];
-      if (!file) {
-        document.getElementById('importStatus').textContent = 'Choose a CSV file first.';
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const rows = parseCsvText(evt.target.result);
-        if (!rows.length) {
-          document.getElementById('importStatus').textContent = 'CSV was empty or could not be read.';
-          csvRows = [];
-          csvHeaders = [];
-          importPreview = [];
-          renderImportPreview();
-          return;
-        }
-        csvHeaders = rows[0];
-        csvRows = rows.slice(1).filter(r => r.length);
-        populateNameColumnSelect();
-        buildImportPreview();
-        renderImportPreview();
-        const matched = importPreview.filter(x => x.status === 'Matched').length;
-        document.getElementById('importStatus').textContent = `CSV parsed. ${csvRows.length} rows found. ${matched} roster matches ready.`;
-      };
-      reader.readAsText(file);
-    }
-
-    function applyCsvImport() {
-      if (!importPreview.length) {
-        document.getElementById('importStatus').textContent = 'Parse a CSV first.';
-        return;
-      }
-      players = players.map(player => {
-        const preview = importPreview.find(p => p.playerName === player.name && p.status === 'Matched');
-        if (!preview || !preview.ratings) return player;
-        return { ...player, ...preview.ratings };
-      });
-      render();
-      const applied = importPreview.filter(x => x.status === 'Matched').length;
-      document.getElementById('importStatus').textContent = `Import applied. ${applied} players updated from CSV.`;
-    }
-
-
-    function addEvent(type, rbi=false) {
-      const batter = players.find(p => p.id == selectedBatterId);
-      if (!batter) return;
-      eventLog.unshift({
-        id: Date.now(),
-        playerId: batter.id,
-        playerName: batter.name,
-        type,
-        rbi: !!rbi,
-        time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-      });
-      render();
-    }
-
-    document.getElementById('opponentInput').addEventListener('input', render);
-    document.getElementById('practiceGoalInput').addEventListener('input', (e) => { practiceGoal = e.target.value; render(); });
-    document.getElementById('pitcherSelect').addEventListener('change', (e) => { selectedPitcherId = Number(e.target.value); render(); });
-    document.getElementById('batterSelect').addEventListener('change', (e) => { selectedBatterId = Number(e.target.value); render(); });
-    document.getElementById('inningsInput').addEventListener('input', (e) => { inningsPitched = Number(e.target.value || 0); render(); });
-    document.getElementById('restDaysInput').addEventListener('input', (e) => { restDays = Number(e.target.value || 0); render(); });
-    document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
-    document.getElementById('applyCsvBtn').addEventListener('click', applyCsvImport);
-    document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
-
-    renderTabs();
+renderTabs();
 render();
 
 async function loadPlayersFromDb() {
   const result = await window.supabaseClient
-    .from('players')
-    .select('*');
+    .from("players")
+    .select("*");
 
   if (result.error) {
-    console.error('Load players error:', result.error);
+    console.error("Load players error:", result.error);
     return;
   }
 
-players = result.data;
-render();
+  players = result.data.map(p => ({
+    ...p,
+    positions: Array.isArray(p.positions)
+      ? p.positions
+      : String(p.positions || "")
+          .split(",")
+          .map(x => x.trim())
+          .filter(Boolean)
+  }));
+
+  render();
 }
 
 loadPlayersFromDb();
 
 async function updatePlayer(name, field, value) {
-  console.log('Saving player:', { name, field, value });
+  console.log("Saving player:", { name, field, value });
 
   const { error } = await window.supabaseClient
-    .from('players')
+    .from("players")
     .update({ [field]: value })
-    .eq('name', name);
+    .eq("name", name);
 
   if (error) {
-    console.error('Update failed:', error);
+    console.error("Update failed:", error);
   } else {
-    console.log('Update sent successfully');
+    console.log("Update sent successfully");
   }
+}
+</script>
 }
   </script>
 </body>
