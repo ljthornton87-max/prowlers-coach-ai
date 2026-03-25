@@ -649,6 +649,36 @@ async function addPlayer() {
   document.getElementById('newCatcher').checked = false;
   document.getElementById('newNotes').value = '';
 }
+    async function loadPlayersFromDB() {
+  const { data, error } = await supabaseClient
+    .from('players')
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) {
+    console.error('Supabase load error:', error);
+    return;
+  }
+
+  console.log('Players from DB:', data);
+
+  players = data.map(p => ({
+    id: p.id,
+    name: p.name || '',
+    contact: p.number || 5,
+    speed: 5,
+    fielding: 5,
+    arm: 5,
+    confidence: 5,
+    pitcher: false,
+    catcher: false,
+    positions: ['OF'],
+    notes: ''
+  }));
+
+  render();
+}
+
     function updatePlayerField(id, field, value) {
       players = players.map(p => {
         if (p.id !== id) return p;
@@ -850,7 +880,7 @@ async function addPlayer() {
     document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
 
     renderTabs();
-    render();
+    loadPlayersFromDB();
     async function loadPlayersFromDb() {
   const result = await window.supabaseClient
     .from('players')
