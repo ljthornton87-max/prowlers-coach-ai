@@ -682,24 +682,29 @@ notes: ''
 }
 
  async function updatePlayerField(id, field, value) {
-  let dbField = field;
   let dbValue = value;
 
-  if (field === 'pitcher' || field === 'catcher') dbValue = !!value;
+  if (['contact', 'speed', 'fielding', 'arm', 'confidence'].includes(field)) {
+    dbValue = Number(value);
+  }
 
-  const { error } = await supabaseClient
+  console.log('Updating player field:', { id, field, dbValue });
+
+  const { data, error } = await supabaseClient
     .from('players')
-    .update({ [dbField]: dbValue })
-    .eq('id', id);
+    .update({ [field]: dbValue })
+    .eq('id', id)
+    .select();
 
   if (error) {
     console.error('Supabase update error:', error);
     return;
   }
 
+  console.log('Supabase update result:', data);
+
   await loadPlayersFromDB();
 }
-
     function parseCsvText(text) {
       const rows = [];
       let row = [];
