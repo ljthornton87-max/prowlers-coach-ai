@@ -667,15 +667,15 @@ document.getElementById('newNotes').value = '';
   players = data.map(p => ({
     id: p.id,
     name: p.name || '',
-    contact: p.number || 5,
-    speed: 5,
-    fielding: 5,
-    arm: 5,
-    confidence: 5,
-    pitcher: false,
-    catcher: false,
-    positions: ['OF'],
-    notes: ''
+    contact: p.contact || 5,
+speed: p.speed || 5,
+fielding: p.fielding || 5,
+arm: p.arm || 5,
+confidence: p.confidence || 5,
+pitcher: false,
+catcher: false,
+positions: p.positions ? p.positions.split(',').map(x => x.trim()).filter(Boolean) : ['OF'],
+notes: ''
   }));
 
   render();
@@ -685,7 +685,6 @@ document.getElementById('newNotes').value = '';
   let dbField = field;
   let dbValue = value;
 
-  if (field === 'contact') dbField = 'number';
   if (field === 'pitcher' || field === 'catcher') dbValue = !!value;
 
   const { error } = await supabaseClient
