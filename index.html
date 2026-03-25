@@ -614,35 +614,39 @@ console.log("client:", window.supabaseClient)
     function updatePlayerPositions(id, value) {
       players = players.map(p => p.id === id ? { ...p, positions: value.split(',').map(x => x.trim()).filter(Boolean) } : p);
       render();
-    }
-    function addPlayer() {
-      const name = document.getElementById('newName').value.trim();
-      if (!name) return;
-      players.push({
-        id: Date.now(),
-        name,
-        contact: Number(document.getElementById('newContact').value || 5),
-        speed: Number(document.getElementById('newSpeed').value || 5),
-        fielding: Number(document.getElementById('newFielding').value || 5),
-        arm: Number(document.getElementById('newArm').value || 5),
-        confidence: Number(document.getElementById('newConfidence').value || 5),
-        pitcher: document.getElementById('newPitcher').checked,
-        catcher: document.getElementById('newCatcher').checked,
-        positions: document.getElementById('newPositions').value.split(',').map(x => x.trim()).filter(Boolean),
-        notes: document.getElementById('newNotes').value
-      });
-      document.getElementById('newName').value = '';
-      document.getElementById('newContact').value = 5;
-      document.getElementById('newSpeed').value = 5;
-      document.getElementById('newFielding').value = 5;
-      document.getElementById('newArm').value = 5;
-      document.getElementById('newConfidence').value = 5;
-      document.getElementById('newPositions').value = 'OF';
-      document.getElementById('newPitcher').checked = false;
-      document.getElementById('newCatcher').checked = false;
-      document.getElementById('newNotes').value = '';
-      render();
-    }
+   async function addPlayer() {
+  const name = document.getElementById('newName').value.trim();
+  if (!name) return;
+
+  const playerPayload = {
+    name,
+    number: Number(document.getElementById('newContact').value || 5)
+  };
+
+  const { data, error } = await supabaseClient
+    .from('players')
+    .insert([playerPayload])
+    .select();
+
+  if (error) {
+    console.error('Supabase insert error:', error);
+    alert('Could not save player');
+    return;
+  }
+
+  console.log('Saved player:', data);
+
+  document.getElementById('newName').value = '';
+  document.getElementById('newContact').value = 5;
+  document.getElementById('newSpeed').value = 5;
+  document.getElementById('newFielding').value = 5;
+  document.getElementById('newArm').value = 5;
+  document.getElementById('newConfidence').value = 5;
+  document.getElementById('newPositions').value = 'OF';
+  document.getElementById('newPitcher').checked = false;
+  document.getElementById('newCatcher').checked = false;
+  document.getElementById('newNotes').value = '';
+}
 
     function updatePlayerField(id, field, value) {
       players = players.map(p => {
