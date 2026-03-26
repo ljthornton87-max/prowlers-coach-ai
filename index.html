@@ -684,11 +684,12 @@ notes: ''
  async function updatePlayerField(id, field, value) {
   let dbValue = value;
 
+  if (['contasync function updatePlayerField(id, field, value) {
+  let dbValue = value;
+
   if (['contact', 'speed', 'fielding', 'arm', 'confidence'].includes(field)) {
     dbValue = Number(value);
   }
-
-  console.log('Updating player field:', { id, field, dbValue });
 
   const { data, error } = await supabaseClient
     .from('players')
@@ -698,6 +699,7 @@ notes: ''
 
   if (error) {
     console.error('Supabase update error:', error);
+    alert('Update failed: ' + error.message);
     return;
   }
 
