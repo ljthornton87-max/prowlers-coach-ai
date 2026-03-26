@@ -616,7 +616,6 @@ console.log("client:", window.supabaseClient)
 
   await loadPlayersFromDB();
 }
-    }
 function updatePlayerPositions(id, value) {
   players = players.map(p => p.id === id ? { ...p, positions: value.split(',').map(x => x.trim()).filter(Boolean) } : p);
   render();
