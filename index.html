@@ -589,7 +589,7 @@ console.log("client:", window.supabaseClient)
               <button class="icon outline" onclick="movePlayer(${idx}, 1)">↓</button>
             </div>
           </td>
-          <td><button class="danger" onclick="removePlayer(${p.id})">Remove</button></td>
+          <td><button class="danger" onclick="removePlayer('${p.id}')">Remove</button></td>
         </tr>
       `).join('');
     }
@@ -602,14 +602,20 @@ console.log("client:", window.supabaseClient)
       [players[index], players[newIndex]] = [players[newIndex], players[index]];
       render();
     }
-    function removePlayer(id) {
-      players = players.filter(p => p.id !== id);
-      if (!players.find(p => p.id == selectedBatterId) && players[0]) selectedBatterId = players[0].id;
-      if (!players.find(p => p.id == selectedPitcherId)) {
-        const fallback = players.find(p => p.pitcher) || players[0];
-        selectedPitcherId = fallback ? fallback.id : null;
-      }
-      render();
+    async function removePlayer(id) {
+  const { error } = await supabaseClient
+    .from('players')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Supabase delete error:', error);
+    alert('Delete failed: ' + error.message);
+    return;
+  }
+
+  await loadPlayersFromDB();
+}
     }
 function updatePlayerPositions(id, value) {
   players = players.map(p => p.id === id ? { ...p, positions: value.split(',').map(x => x.trim()).filter(Boolean) } : p);
