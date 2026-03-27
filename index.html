@@ -430,6 +430,20 @@ function loadGameState() {
   selectedPitcherId = saved.selectedPitcherId || '';
   selectedBatterId = saved.selectedBatterId || '';
 }
+    function getCurrentPitchTracker() {
+  if (!selectedPitcherId) return { pitchCount: 0, inningsPitched: 0, restDays: 0 };
+  if (!pitchTrackerByPlayer[selectedPitcherId]) {
+    pitchTrackerByPlayer[selectedPitcherId] = { pitchCount: 0, inningsPitched: 0, restDays: 0 };
+  }
+  return pitchTrackerByPlayer[selectedPitcherId];
+}
+
+function ensurePitchTracker(playerId) {
+  if (!playerId) return;
+  if (!pitchTrackerByPlayer[playerId]) {
+    pitchTrackerByPlayer[playerId] = { pitchCount: 0, inningsPitched: 0, restDays: 0 };
+  }
+}
     function scorePlayerForLineup(player, slot) {
       const base = player.contact * 4 + player.confidence * 3 + player.speed * 2;
       const topBoost = slot <= 2 ? player.speed * 2 + player.contact * 2 : 0;
