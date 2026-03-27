@@ -716,9 +716,9 @@ if (!selectedPitcherId && markedPitchers.length) {
   selectedPitcherId = markedPitchers[0].id;
 }
 
-render();
-
- async function updatePlayerField(id, field, value) {
+719  render();
+720  }
+721  async function updatePlayerField(id, field, value) {
   let dbValue = value;
 if (field === 'pitcher' || field === 'catcher') {
   const player = players.find(p => p.id === id);
