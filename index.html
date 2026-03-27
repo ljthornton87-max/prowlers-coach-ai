@@ -937,7 +937,6 @@ return;
       document.getElementById('importStatus').textContent = `Import applied. ${applied} players updated from CSV.`;
     }
 
-
     function addEvent(type, rbi=false) {
   console.log('addEvent fired:', type);
   console.log('selectedBatterId:', selectedBatterId);
@@ -966,9 +965,9 @@ return;
     document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
     document.getElementById('applyCsvBtn').addEventListener('click', applyCsvImport);
     document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
-
+      
     renderTabs();
     loadPlayersFromDB();
-  </script>
+</script>
 </body>
 </html>
