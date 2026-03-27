@@ -471,6 +471,17 @@ function loadGameState() {
       if (pitchCount < 50) return { label: "Orange", text: "Start warming next arm.", value: 80 };
       return { label: "Red", text: "Risk zone. Strong pull candidate.", value: 100 };
     }
+    function adjustPitch(amount) {
+  pitchCount = Math.max(0, pitchCount + amount);
+  saveGameState();
+  render();
+}
+
+function resetPitch() {
+  pitchCount = 0;
+  saveGameState();
+  render();
+}
     function buildPracticePlan(goal) {
       const lower = goal.toLowerCase();
       if (lower.includes("confidence")) return [
