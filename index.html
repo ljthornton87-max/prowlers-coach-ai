@@ -657,7 +657,7 @@ document.getElementById('newNotes').value = '';
   const { data, error } = await supabaseClient
     .from('players')
     .select('*')
-    .order('name', { ascending: true });
+   .order('sort_order', { ascending: true });
 
   if (error) {
     console.error('Supabase load error:', error);
