@@ -693,7 +693,7 @@ document.getElementById('newNotes').value = '';
 
   console.log('Players from DB:', data);
 
-  players = data.map(p => ({
+ players = data.map(p => ({
   id: p.id,
   name: p.name || '',
   contact: p.contact || 5,
@@ -707,8 +707,16 @@ document.getElementById('newNotes').value = '';
   notes: ''
 }));
 
-  render();
+if (!selectedBatterId && players.length) {
+  selectedBatterId = players[0].id;
 }
+
+const markedPitchers = players.filter(p => p.pitcher);
+if (!selectedPitcherId && markedPitchers.length) {
+  selectedPitcherId = markedPitchers[0].id;
+}
+
+render();
 
  async function updatePlayerField(id, field, value) {
   let dbValue = value;
