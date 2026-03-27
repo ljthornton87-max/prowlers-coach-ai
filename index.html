@@ -594,14 +594,30 @@ console.log("client:", window.supabaseClient)
       `).join('');
     }
 
-    function adjustPitch(n) { pitchCount = Math.max(0, pitchCount + n); render(); }
-    function resetPitch() { pitchCount = 0; render(); }
-    function movePlayer(index, direction) {
-      const newIndex = index + direction;
-      if (newIndex < 0 || newIndex >= players.length) return;
-      [players[index], players[newIndex]] = [players[newIndex], players[index]];
-      render();
-    }
+    async function movePlayer(index, direction) {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= players.length) return;
+
+  [players[index], players[newIndex]] = [players[newIndex], players[index]];
+
+  for (let i = 0; i < players.length; i++) {
+  players[i].sort_order = i + 1;
+
+  const { error } = await supabaseClient
+    .from('players')
+    .update({ sort_order: players[i].sort_order })
+    .eq('id', players[i].id);
+
+  if (error) {
+    console.error('Sort update error:', error);
+    alert('Sort update failed: ' + error.message);
+    return;
+  }
+}
+
+await loadPlayersFromDB();
+render();
+}
 async function removePlayer(id) {
   const { error } = await supabaseClient
     .from('players')
