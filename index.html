@@ -400,9 +400,7 @@ console.log("client:", window.supabaseClient)
   { id: 11, name: "Sebastian Ramos", contact: 5, speed: 5, fielding: 5, arm: 5, confidence: 5, pitcher: false, catcher: false, positions: ["OF"], notes: "" }
 ]
 ;
-    let pitchCount = 0;
-    let inningsPitched = 0;
-    let restDays = 0;
+    let pitchTrackerByPlayer = {};
     let eventLog = [];
     let selectedPitcherId = '';
     let selectedBatterId = '';
@@ -412,9 +410,7 @@ console.log("client:", window.supabaseClient)
     let importPreview = [];
 function saveGameState() {
   localStorage.setItem('prowlersGameState', JSON.stringify({
-    pitchCount,
-    inningsPitched,
-    restDays,
+    pitchTrackerByPlayer,
     eventLog,
     selectedPitcherId,
     selectedBatterId
