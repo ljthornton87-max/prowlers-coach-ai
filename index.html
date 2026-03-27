@@ -602,7 +602,9 @@ console.log("client:", window.supabaseClient)
       [players[index], players[newIndex]] = [players[newIndex], players[index]];
       render();
     }
-    async function removePlayer(id) {
+async function removePlayer(id) {
+  console.log('Deleting ID:', id);
+
   const { error } = await supabaseClient
     .from('players')
     .delete()
