@@ -262,7 +262,7 @@ console.log("client:", window.supabaseClient)
         <div class="card-head"><h3>Game snapshot</h3></div>
         <div class="card-body table-wrap">
           <table>
-            <thead><tr><th>Player</th><th>Hits</th><th>Outs</th><th>RBIs</th><th>Confidence read</th></tr></thead>
+            <thead><tr><th>Player</th><th>Hits</th><th>HR</th><th>Outs</th><th>RBIs</th><th>Confidence read</th></tr></thead>
             <tbody id="snapshotTable"></tbody>
           </table>
         </div>
@@ -525,10 +525,11 @@ function resetPitch() {
       players.forEach((p) => {
         const playerEvents = eventLog.filter((e) => e.playerId === p.id);
         summary[p.id] = {
-          hits: playerEvents.filter((e) => ["Single","Double","Triple"].includes(e.type)).length,
-          outs: playerEvents.filter((e) => ["K","Groundout","Flyout"].includes(e.type)).length,
-          rbis: playerEvents.filter((e) => e.rbi).length,
-        };
+  hits: playerEvents.filter((e) => ["Single","Double","Triple","Home Run"].includes(e.type)).length,
+  hrs: playerEvents.filter((e) => e.type === "Home Run").length,
+  outs: playerEvents.filter((e) => ["K","Groundout","Flyout"].includes(e.type)).length,
+  rbis: playerEvents.filter((e) => e.rbi).length,
+};
       });
       return summary;
     }
@@ -614,9 +615,9 @@ document.getElementById('pitcherSelect').value = selectedPitcherId || '';
       `).join('') : '<div class="subtle">No events logged yet.</div>';
 
       document.getElementById('snapshotTable').innerHTML = players.map(p => {
-        const row = summary[p.id] || { hits: 0, outs: 0, rbis: 0 };
+        const row = summary[p.id] || { hits: 0, hrs: 0, outs: 0, rbis: 0 };
         const confidenceRead = row.hits > row.outs ? "Up" : row.outs >= 2 ? "Needs win" : "Steady";
-        return `<tr><td><strong>${p.name}</strong></td><td>${row.hits}</td><td>${row.outs}</td><td>${row.rbis}</td><td>${confidenceRead}</td></tr>`;
+        return `<tr><td><strong>${p.name}</strong></td><td>${row.hits}</td><td>${row.hrs}</td><td>${row.outs}</td><td>${row.rbis}</td><td>${confidenceRead}</td></tr>`;
       }).join('');
 
       document.getElementById('practicePlan').innerHTML = buildPracticePlan(practiceGoal).map((step, idx) => `<div class="plan-step">${idx + 1}. ${step}</div>`).join('');
