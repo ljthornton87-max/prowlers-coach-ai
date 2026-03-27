@@ -603,30 +603,19 @@ console.log("client:", window.supabaseClient)
       render();
     }
 async function removePlayer(id) {
-  console.log('Deleting ID:', id);
+  const { error } = await supabaseClient
+    .from('players')
+    .delete()
+    .eq('id', id);
 
-  try {
-    const result = await supabaseClient
-      .from('players')
-      .delete()
-      .eq('id', id)
-      .select();
-
-    console.log('Full delete result:', result);
-
-    if (result.error) {
-      console.error('Supabase delete error:', result.error);
-      alert('Delete failed: ' + result.error.message);
-      return;
-    }
-
-    console.log('Delete success, reloading players...');
-    await loadPlayersFromDB();
-    render();
-  } catch (err) {
-    console.error('Remove player crashed:', err);
-    alert('Remove player crashed: ' + err.message);
+  if (error) {
+    console.error('Supabase delete error:', error);
+    alert('Delete failed: ' + error.message);
+    return;
   }
+
+  await loadPlayersFromDB();
+  render();
 }
 
 async function addPlayer() {
