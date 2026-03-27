@@ -606,13 +606,14 @@ if (!selectedPitcherId && markedPitchers.length) {
 
 document.getElementById('batterSelect').value = selectedBatterId || '';
 document.getElementById('pitcherSelect').value = selectedPitcherId || '';
-      const log = document.getElementById('eventLog');
-      log.innerHTML = eventLog.length ? eventLog.map(e => `
-        <div class="event">
-          <div><div><strong>${e.playerName}</strong></div><div class="subtle">${e.type}${e.rbi ? ' • RBI' : ''}</div></div>
-          <div class="small">${e.time}</div>
-        </div>
-      `).join('') : '<div class="subtle">No events logged yet.</div>';
+     const log = document.getElementById('eventLog');
+const selectedPlayerLog = eventLog.filter(e => String(e.playerId) === String(selectedBatterId));
+log.innerHTML = selectedPlayerLog.length ? selectedPlayerLog.map(e => `
+  <div class="event">
+    <div><div><strong>${e.playerName}</strong></div><div class="subtle">${e.type}${e.rbi ? ' • RBI' : ''}</div></div>
+    <div class="small">${e.time}</div>
+  </div>
+`).join('') : '<div class="subtle">No events logged yet for this player.</div>';
 
       document.getElementById('snapshotTable').innerHTML = players.map(p => {
         const row = summary[p.id] || { hits: 0, hrs: 0, outs: 0, rbis: 0 };
