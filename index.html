@@ -920,19 +920,24 @@ return;
 
 
     function addEvent(type, rbi=false) {
-      const batter = players.find(p => p.id == selectedBatterId);
-      if (!batter) return;
-      eventLog.unshift({
-        id: Date.now(),
-        playerId: batter.id,
-        playerName: batter.name,
-        type,
-        rbi: !!rbi,
-        time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-      });
-      render();
-    }
+  console.log('addEvent fired:', type);
+  console.log('selectedBatterId:', selectedBatterId);
 
+  const batter = players.find(p => p.id == selectedBatterId);
+  console.log('found batter:', batter);
+
+  if (!batter) return;
+
+  eventLog.unshift({
+    id: Date.now(),
+    playerId: batter.id,
+    playerName: batter.name,
+    type,
+    rbi: !!rbi,
+    time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  });
+  render();
+}
     document.getElementById('opponentInput').addEventListener('input', render);
     document.getElementById('practiceGoalInput').addEventListener('input', (e) => { practiceGoal = e.target.value; render(); });
     document.getElementById('pitcherSelect').addEventListener('change', (e) => { selectedPitcherId = e.target.value; render(); });
