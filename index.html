@@ -476,9 +476,16 @@ function loadGameState() {
   saveGameState();
   render();
 }
-
 function resetPitch() {
+  if (!confirm('Are you sure you want to reset the Pitch Smart tracker?')) return;
   pitchCount = 0;
+  saveGameState();
+  render();
+}
+    function resetAtBatTracker() {
+  if (!confirm('Are you sure you want to reset the Simple at-bat tracker?')) return;
+  eventLog = [];
+  selectedBatterId = '';
   saveGameState();
   render();
 }
