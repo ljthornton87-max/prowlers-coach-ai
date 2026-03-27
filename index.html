@@ -552,7 +552,17 @@ console.log("client:", window.supabaseClient)
       document.getElementById('pitcherSelect').innerHTML = pitcherOptions || '<option value="">No pitchers marked yet</option>';
       const batterOptions = players.map(p => `<option value="${p.id}" ${p.id == selectedBatterId ? 'selected' : ''}>${p.name}</option>`).join('');
       document.getElementById('batterSelect').innerHTML = batterOptions;
+if (!selectedBatterId && players.length) {
+  selectedBatterId = players[0].id;
+}
 
+const markedPitchers = players.filter(p => p.pitcher);
+if (!selectedPitcherId && markedPitchers.length) {
+  selectedPitcherId = markedPitchers[0].id;
+}
+
+document.getElementById('batterSelect').value = selectedBatterId || '';
+document.getElementById('pitcherSelect').value = selectedPitcherId || '';
       const log = document.getElementById('eventLog');
       log.innerHTML = eventLog.length ? eventLog.map(e => `
         <div class="event">
