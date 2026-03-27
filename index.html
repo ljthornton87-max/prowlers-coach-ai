@@ -589,7 +589,7 @@ console.log("client:", window.supabaseClient)
               <button class="icon outline" onclick="movePlayer(${idx}, 1)">↓</button>
             </div>
           </td>
-          <td><button class="danger" onclick="removePlayer('${p.id}')">Remove</button></td>
+          <td><button class="danger" type="button" onclick="removePlayer('${p.id}')">Remove</button></td>
         </tr>
       `).join('');
     }
