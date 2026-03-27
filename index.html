@@ -605,25 +605,28 @@ console.log("client:", window.supabaseClient)
 async function removePlayer(id) {
   console.log('Deleting ID:', id);
 
-  const { data, error } = await supabaseClient
-  .from('players')
-  .delete()
-  .eq('id', id)
-  .select();
+  try {
+    const result = await supabaseClient
+      .from('players')
+      .delete()
+      .eq('id', id)
+      .select();
 
-console.log('Delete result:', data);
+    console.log('Full delete result:', result);
 
-  if (error) {
-    console.error('Supabase delete error:', error);
-    alert('Delete failed: ' + error.message);
-    return;
+    if (result.error) {
+      console.error('Supabase delete error:', result.error);
+      alert('Delete failed: ' + result.error.message);
+      return;
+    }
+
+    console.log('Delete success, reloading players...');
+    await loadPlayersFromDB();
+    render();
+  } catch (err) {
+    console.error('Remove player crashed:', err);
+    alert('Remove player crashed: ' + err.message);
   }
-
-  await loadPlayersFromDB();
-}
-function updatePlayerPositions(id, value) {
-  players = players.map(p => p.id === id ? { ...p, positions: value.split(',').map(x => x.trim()).filter(Boolean) } : p);
-  render();
 }
 
 async function addPlayer() {
