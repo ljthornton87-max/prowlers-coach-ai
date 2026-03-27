@@ -935,8 +935,8 @@ return;
 
     document.getElementById('opponentInput').addEventListener('input', render);
     document.getElementById('practiceGoalInput').addEventListener('input', (e) => { practiceGoal = e.target.value; render(); });
-    document.getElementById('pitcherSelect').addEventListener('change', (e) => { selectedPitcherId = Number(e.target.value); render(); });
-    document.getElementById('batterSelect').addEventListener('change', (e) => { selectedBatterId = Number(e.target.value); render(); });
+    document.getElementById('pitcherSelect').addEventListener('change', (e) => { selectedPitcherId = e.target.value; render(); });
+    document.getElementById('batterSelect').addEventListener('change', (e) => { selectedBatterId = e.target.value; render(); });
     document.getElementById('inningsInput').addEventListener('input', (e) => { inningsPitched = Number(e.target.value || 0); render(); });
     document.getElementById('restDaysInput').addEventListener('input', (e) => { restDays = Number(e.target.value || 0); render(); });
     document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
