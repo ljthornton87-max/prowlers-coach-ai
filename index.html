@@ -409,7 +409,30 @@ console.log("client:", window.supabaseClient)
     let csvRows = [];
     let csvHeaders = [];
     let importPreview = [];
+function saveGameState() {
+  localStorage.setItem('prowlersGameState', JSON.stringify({
+    pitchCount,
+    inningsPitched,
+    restDays,
+    eventLog,
+    selectedPitcherId,
+    selectedBatterId
+  }));
+}
 
+function loadGameState() {
+  const raw = localStorage.getItem('prowlersGameState');
+  if (!raw) return;
+
+  const saved = JSON.parse(raw);
+
+  pitchCount = saved.pitchCount || 0;
+  inningsPitched = saved.inningsPitched || 0;
+  restDays = saved.restDays || 0;
+  eventLog = saved.eventLog || [];
+  selectedPitcherId = saved.selectedPitcherId || '';
+  selectedBatterId = saved.selectedBatterId || '';
+}
     function scorePlayerForLineup(player, slot) {
       const base = player.contact * 4 + player.confidence * 3 + player.speed * 2;
       const topBoost = slot <= 2 ? player.speed * 2 + player.contact * 2 : 0;
@@ -954,20 +977,22 @@ return;
     rbi: !!rbi,
     time: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
   });
-  render();
+saveGameState();
+render();
 }
     document.getElementById('opponentInput').addEventListener('input', render);
     document.getElementById('practiceGoalInput').addEventListener('input', (e) => { practiceGoal = e.target.value; render(); });
-    document.getElementById('pitcherSelect').addEventListener('change', (e) => { selectedPitcherId = e.target.value; render(); });
-    document.getElementById('batterSelect').addEventListener('change', (e) => { selectedBatterId = e.target.value; render(); });
-    document.getElementById('inningsInput').addEventListener('input', (e) => { inningsPitched = Number(e.target.value || 0); render(); });
-    document.getElementById('restDaysInput').addEventListener('input', (e) => { restDays = Number(e.target.value || 0); render(); });
+    document.getElementById('pitcherSelect').addEventListener('change', (e) => { selectedPitcherId = e.target.value; saveGameState(); render(); });
+    document.getElementById('batterSelect').addEventListener('change', (e) => { selectedBatterId = e.target.value; saveGameState(); render(); });
+    document.getElementById('inningsInput').addEventListener('input', (e) => { inningsPitched = Number(e.target.value || 0); saveGameState(); render(); });
+    document.getElementById('restDaysInput').addEventListener('input', (e) => { restDays = Number(e.target.value || 0); saveGameState(); render(); });
     document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
     document.getElementById('applyCsvBtn').addEventListener('click', applyCsvImport);
     document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
       
-    renderTabs();
-    loadPlayersFromDB();
+renderTabs();
+loadGameState();
+loadPlayersFromDB();
 </script>
 </body>
 </html>
