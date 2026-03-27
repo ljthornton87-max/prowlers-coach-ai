@@ -683,25 +683,59 @@ document.getElementById('newNotes').value = '';
   console.log('Players from DB:', data);
 
   players = data.map(p => ({
-    id: p.id,
-    name: p.name || '',
-    contact: p.contact || 5,
-speed: p.speed || 5,
-fielding: p.fielding || 5,
-arm: p.arm || 5,
-confidence: p.confidence || 5,
-pitcher: false,
-catcher: false,
-positions: p.positions ? p.positions.split(',').map(x => x.trim()).filter(Boolean) : ['OF'],
-notes: ''
-  }));
+  id: p.id,
+  name: p.name || '',
+  contact: p.contact || 5,
+  speed: p.speed || 5,
+  fielding: p.fielding || 5,
+  arm: p.arm || 5,
+  confidence: p.confidence || 5,
+  pitcher: p.positions ? p.positions.split(',').map(x => x.trim()).includes('P') : false,
+  catcher: p.positions ? p.positions.split(',').map(x => x.trim()).includes('C') : false,
+  positions: p.positions ? p.positions.split(',').map(x => x.trim()).filter(Boolean) : ['OF'],
+  notes: ''
+}));
 
   render();
 }
 
  async function updatePlayerField(id, field, value) {
   let dbValue = value;
+if (field === 'pitcher' || field === 'catcher') {
+  const player = players.find(p => p.id === id);
+  if (!player) return;
 
+  let positions = [...(player.positions || [])];
+
+  if (field === 'pitcher') {
+    positions = value
+      ? Array.from(new Set([...positions, 'P']))
+      : positions.filter(pos => pos !== 'P');
+  }
+
+  if (field === 'catcher') {
+    positions = value
+      ? Array.from(new Set([...positions, 'C']))
+      : positions.filter(pos => pos !== 'C');
+  }
+
+  const dbPositions = positions.join(',');
+
+  const { error } = await supabaseClient
+    .from('players')
+    .update({ positions: dbPositions })
+    .eq('id', id);
+
+  if (error) {
+    console.error('Supabase update error:', error);
+    alert('Update failed: ' + error.message);
+    return;
+  }
+
+  await loadPlayersFromDB();
+render();
+return;
+}
   if (['contact', 'speed', 'fielding', 'arm', 'confidence'].includes(field)) {
     dbValue = Number(value);
   }
