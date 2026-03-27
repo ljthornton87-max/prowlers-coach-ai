@@ -867,22 +867,23 @@ return;
     }
 
     function renderImportPreview() {
-      const table = document.getElementById('importPreviewTable');
-      if (!table) return;
-      if (!importPreview.length) {
-        table.innerHTML = '<tr><td colspan="4" class="subtle">No preview yet.</td></tr>';
-        return;
-      }
-      table.innerHTML = importPreview.map(item => `
-        <tr>
-          <td><strong>${item.playerName}</strong></td>
-          <td>${item.csvName || '—'}</td>
-          <td>${item.ratings ? `C ${item.ratings.contact} • Sp ${item.ratings.speed} • F ${item.ratings.fielding} • A ${item.ratings.arm} • Conf ${item.ratings.confidence}` : '—'}</td>
-          <td class="${item.status === 'Matched' ? 'status-good' : 'status-warn'}">${item.status}</td>
-        </tr>
-      `).join('');
-    }
+  const table = document.getElementById('importPreviewTable');
+  if (!table) return;
 
+  if (!importPreview.length) {
+    table.innerHTML = '<tr><td colspan="4" class="subtitle">No preview yet.</td></tr>';
+    return;
+  }
+
+  table.innerHTML = importPreview.map(item => `
+    <tr>
+      <td><strong>${item.playerName}</strong></td>
+      <td>${item.csvName || '--'}</td>
+      <td>${item.ratings ? `C ${item.ratings.contact} • Sp ${item.ratings.speed} • F ${item.ratings.fielding} • A ${item.ratings.arm} • Conf ${item.ratings.confidence}` : '--'}</td>
+      <td class="${item.status === 'Matched' ? 'status-good' : 'status-warn'}">${item.status}</td>
+    </tr>
+  `).join('');
+}
     function populateNameColumnSelect() {
       const select = document.getElementById('nameColumnSelect');
       if (!select) return;
