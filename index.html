@@ -423,12 +423,10 @@ function loadGameState() {
 
   const saved = JSON.parse(raw);
 
-  pitchCount = saved.pitchCount || 0;
-  inningsPitched = saved.inningsPitched || 0;
-  restDays = saved.restDays || 0;
-  eventLog = saved.eventLog || [];
-  selectedPitcherId = saved.selectedPitcherId || '';
-  selectedBatterId = saved.selectedBatterId || '';
+pitchTrackerByPlayer = saved.pitchTrackerByPlayer || {};
+eventLog = saved.eventLog || [];
+selectedPitcherId = saved.selectedPitcherId || '';
+selectedBatterId = saved.selectedBatterId || '';
 }
     function getCurrentPitchTracker() {
   if (!selectedPitcherId) return { pitchCount: 0, inningsPitched: 0, restDays: 0 };
