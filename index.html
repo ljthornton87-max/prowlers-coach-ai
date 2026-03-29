@@ -557,6 +557,7 @@ function resetPitch() {
     function render() {
       const lineup = getLineup();
       const defense = getDefense(lineup.starters);
+      const currentPitchTracker = getCurrentPitchTracker();
       const pStatus = pitcherStatus();
       const pitcher = players.find(p => p.id == selectedPitcherId) || players.find(p => p.pitcher) || players[0];
       const summary = hitterSummary();
