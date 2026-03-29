@@ -565,16 +565,16 @@ function resetPitch() {
       document.getElementById('leadoffName').textContent = lineup.starters[0]?.name || '—';
       document.getElementById('dashPitcherName').textContent = pitcher?.name || '—';
       document.getElementById('dashPitchLabel').textContent = pStatus.label;
-      document.getElementById('dashPitchCount').textContent = pitchCount;
+      document.getElementById('dashPitchCount').textContent = currentPitchTracker.pitchCount;
       document.getElementById('dashPitchText').textContent = pStatus.text;
       document.getElementById('dashBar').style.width = pStatus.value + '%';
       document.getElementById('dashPracticeGoal').textContent = practiceGoal;
 
-      document.getElementById('pitchCountBig').textContent = pitchCount;
+      document.getElementById('pitchCountBig').textContent = currentPitchTracker.pitchCount;
       document.getElementById('pitchText').textContent = pStatus.text;
       document.getElementById('pitchBar').style.width = pStatus.value + '%';
-      document.getElementById('inningsVal').textContent = inningsPitched;
-      document.getElementById('restDaysVal').textContent = restDays;
+      document.getElementById('inningsVal').textContent = currentPitchTracker.inningsPitched;
+      document.getElementById('restDaysVal').textContent = currentPitchTracker.restDays;
 
       document.getElementById('hittingCues').innerHTML = hittingCues.map(c => `<div class="cue">${c}</div>`).join('');
       document.getElementById('lineupTable').innerHTML = lineup.starters.map((p, idx) => `
