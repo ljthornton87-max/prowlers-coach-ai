@@ -475,19 +475,22 @@ function ensurePitchTracker(playerId) {
       });
     }
     function pitcherStatus() {
-      if (pitchCount < 20) return { label: "Green", text: "Fresh arm. Let him work.", value: 25 };
-      if (pitchCount < 35) return { label: "Yellow", text: "Watch mechanics and body language.", value: 55 };
-      if (pitchCount < 50) return { label: "Orange", text: "Start warming next arm.", value: 80 };
-      return { label: "Red", text: "Risk zone. Strong pull candidate.", value: 100 };
-    }
+  const currentPitchTracker = getCurrentPitchTracker();
+  if (currentPitchTracker.pitchCount < 20) return { label: "Green", text: "Fresh arm. Let him work.", value: 25 };
+  if (currentPitchTracker.pitchCount < 35) return { label: "Yellow", text: "Watch mechanics and body language.", value: 55 };
+  if (currentPitchTracker.pitchCount < 50) return { label: "Orange", text: "Start warming next arm.", value: 80 };
+  return { label: "Red", text: "Risk zone. Strong pull candidate.", value: 100 };
+}
     function adjustPitch(amount) {
-  pitchCount = Math.max(0, pitchCount + amount);
+  const currentPitchTracker = getCurrentPitchTracker();
+  currentPitchTracker.pitchCount = Math.max(0, currentPitchTracker.pitchCount + amount);
   saveGameState();
   render();
 }
 function resetPitch() {
   if (!confirm('Are you sure you want to reset the Pitch Smart tracker?')) return;
-  pitchCount = 0;
+  const currentPitchTracker = getCurrentPitchTracker();
+  currentPitchTracker.pitchCount = 0;
   saveGameState();
   render();
 }
@@ -1011,10 +1014,10 @@ render();
 }
     document.getElementById('opponentInput').addEventListener('input', render);
     document.getElementById('practiceGoalInput').addEventListener('input', (e) => { practiceGoal = e.target.value; render(); });
-    document.getElementById('pitcherSelect').addEventListener('change', (e) => { selectedPitcherId = e.target.value; saveGameState(); render(); });
+    document.getElementById('pitcherSelect').addEventListener('change', (e) => { selectedPitcherId = e.target.value; ensurePitchTracker(selectedPitcherId); saveGameState(); render(); });
     document.getElementById('batterSelect').addEventListener('change', (e) => { selectedBatterId = e.target.value; saveGameState(); render(); });
-    document.getElementById('inningsInput').addEventListener('input', (e) => { inningsPitched = Number(e.target.value || 0); saveGameState(); render(); });
-    document.getElementById('restDaysInput').addEventListener('input', (e) => { restDays = Number(e.target.value || 0); saveGameState(); render(); });
+    document.getElementById('inningsInput').addEventListener('input', (e) => { const currentPitchTracker = getCurrentPitchTracker(); currentPitchTracker.inningsPitched = Number(e.target.value || 0); saveGameState(); render(); });
+    document.getElementById('restDaysInput').addEventListener('input', (e) => { const currentPitchTracker = getCurrentPitchTracker(); currentPitchTracker.restDays = Number(e.target.value || 0); saveGameState(); render(); });
     document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
     document.getElementById('applyCsvBtn').addEventListener('click', applyCsvImport);
     document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
