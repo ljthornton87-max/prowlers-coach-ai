@@ -409,6 +409,8 @@ console.log("client:", window.supabaseClient)
     let csvRows = [];
     let csvHeaders = [];
     let importPreview = [];
+    let importedGameHistory = [];
+let pendingImportedGame = null;
 function saveGameState() {
   localStorage.setItem('prowlersGameState', JSON.stringify({
     pitchTrackerByPlayer,
