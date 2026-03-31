@@ -416,7 +416,9 @@ function saveGameState() {
     pitchTrackerByPlayer,
     eventLog,
     selectedPitcherId,
-    selectedBatterId
+    selectedBatterId,
+    importedGameHistory,
+    pendingImportedGame,
   }));
 }
 
@@ -430,6 +432,8 @@ pitchTrackerByPlayer = saved.pitchTrackerByPlayer || {};
 eventLog = saved.eventLog || [];
 selectedPitcherId = saved.selectedPitcherId || '';
 selectedBatterId = saved.selectedBatterId || '';
+importedGameHistory = saved.importedGameHistory || [];
+pendingImportedGame = saved.pendingImportedGame || null;
 }
     function getCurrentPitchTracker() {
   if (!selectedPitcherId) return { pitchCount: 0, inningsPitched: 0, restDays: 0 };
@@ -976,37 +980,52 @@ return;
       reader.onload = function(evt) {
         const rows = parseCsvText(evt.target.result);
         if (!rows.length) {
-          document.getElementById('importStatus').textContent = 'CSV was empty or could not be read.';
-          csvRows = [];
-          csvHeaders = [];
-          importPreview = [];
-          renderImportPreview();
-          return;
-        }
+  document.getElementById('importStatus').textContent = 'CSV was empty or could not be read.';
+  csvRows = [];
+  csvHeaders = [];
+  importPreview = [];
+  pendingImportedGame = null;
+  renderImportPreview();
+  return;
+}
         csvHeaders = rows[0];
         csvRows = rows.slice(1).filter(r => r.length);
         populateNameColumnSelect();
         buildImportPreview();
         renderImportPreview();
         const matched = importPreview.filter(x => x.status === 'Matched').length;
+        pendingImportedGame = {
+  fileName: file.name,
+  importedAt: new Date().toISOString(),
+  rowsCount: csvRows.length,
+  matchedCount: matched,
+  sourceRows: csvRows,        
+  preview: importPreview.filter(x => x.status === 'Matched')
+};
         document.getElementById('importStatus').textContent = `CSV parsed. ${csvRows.length} rows found. ${matched} roster matches ready.`;
       };
       reader.readAsText(file);
     }
 
-    function applyCsvImport() {
-      if (!importPreview.length) {
-        document.getElementById('importStatus').textContent = 'Parse a CSV first.';
-        return;
-      }
+    async function applyCsvImport() {
+      if (!pendingImportedGame) {
+  document.getElementById('importStatus').textContent = 'Parse a CSV first.';
+  return;
+}
+    
       players = players.map(player => {
         const preview = importPreview.find(p => p.playerName === player.name && p.status === 'Matched');
         if (!preview || !preview.ratings) return player;
         return { ...player, ...preview.ratings };
       });
+
+      importedGameHistory.push(pendingImportedGame);
+      pendingImportedGame = null;
+      saveGameState();
+      
       render();
       const applied = importPreview.filter(x => x.status === 'Matched').length;
-      document.getElementById('importStatus').textContent = `Import applied. ${applied} players updated from CSV.`;
+      document.getElementById('importStatus').textContent = `Import applied. ${applied} players updated from CSV. ${importedGameHistory.length} game file(s) now stored.`;
     }
 
     function addEvent(type, rbi=false) {
