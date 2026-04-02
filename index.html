@@ -291,6 +291,27 @@ console.log("client:", window.supabaseClient)
             <textarea id="practiceNotesInput" placeholder="Custom practice notes..."></textarea>
           </div>
         </div>
+        <div class="card">
+  <div class="card-head"><h3>Training video / drill of the week</h3></div>
+  <div class="card-body stack">
+    <div>
+      <label>Title</label>
+      <input id="trainingTitleInput" placeholder="Example: 3-step outfield drill" />
+    </div>
+    <div>
+      <label>Link</label>
+      <input id="trainingLinkInput" placeholder="Paste video or drill link" />
+    </div>
+    <div>
+      <label>Category</label>
+      <input id="trainingCategoryInput" placeholder="Example: Fielding, Hitting, Throwing" />
+    </div>
+    <div>
+      <label>Coach note</label>
+      <textarea id="trainingCoachNoteInput" placeholder="Why this drill matters for this practice goal"></textarea>
+    </div>
+  </div>
+</div>
       </div>
     </div>
 
@@ -407,6 +428,7 @@ console.log("client:", window.supabaseClient)
     let selectedBatterId = '';
     let practiceGoal = "Fielding + hitting + confidence";
     let practiceNotesByGoal = JSON.parse(localStorage.getItem('practiceNotesByGoal') || '{}');
+    let trainingByGoal = JSON.parse(localStorage.getItem('trainingByGoal') || '{}');
     let csvRows = [];
     let csvHeaders = [];
     let importPreview = [];
@@ -657,6 +679,11 @@ log.innerHTML = selectedPlayerLog.length ? selectedPlayerLog.map(e => `
       document.getElementById('practicePlan').innerHTML = buildPracticePlan(practiceGoal).map((step, idx) => `<div class="plan-step">${idx + 1}. ${step}</div>`).join('');
       const savedPracticeNote = practiceNotesByGoal[practiceGoal] || '';
 document.getElementById('practiceNotesInput').value = savedPracticeNote;
+      const savedTraining = trainingByGoal[practiceGoal] || {};
+document.getElementById('trainingTitleInput').value = savedTraining.title || '';
+document.getElementById('trainingLinkInput').value = savedTraining.link || '';
+document.getElementById('trainingCategoryInput').value = savedTraining.category || '';
+document.getElementById('trainingCoachNoteInput').value = savedTraining.coachNote || '';
       renderImportPreview();
 
       document.getElementById('rosterTable').innerHTML = players.map((p, idx) => `
@@ -1060,7 +1087,10 @@ render();
     document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
     document.getElementById('applyCsvBtn').addEventListener('click', applyCsvImport);
     document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
-      
+    document.getElementById('trainingTitleInput').addEventListener('input', (e) => { trainingByGoal[practiceGoal] = trainingByGoal[practiceGoal] || {}; trainingByGoal[practiceGoal].title = e.target.value; localStorage.setItem('trainingByGoal', JSON.stringify(trainingByGoal)); });
+    document.getElementById('trainingLinkInput').addEventListener('input', (e) => { trainingByGoal[practiceGoal] = trainingByGoal[practiceGoal] || {}; trainingByGoal[practiceGoal].link = e.target.value; localStorage.setItem('trainingByGoal', JSON.stringify(trainingByGoal)); });
+    document.getElementById('trainingCategoryInput').addEventListener('input', (e) => { trainingByGoal[practiceGoal] = trainingByGoal[practiceGoal] || {}; trainingByGoal[practiceGoal].category = e.target.value; localStorage.setItem('trainingByGoal', JSON.stringify(trainingByGoal)); });
+    document.getElementById('trainingCoachNoteInput').addEventListener('input', (e) => { trainingByGoal[practiceGoal] = trainingByGoal[practiceGoal] || {}; trainingByGoal[practiceGoal].coachNote = e.target.value; localStorage.setItem('trainingByGoal', JSON.stringify(trainingByGoal)); });  
 renderTabs();
 loadGameState();
 loadPlayersFromDB();
