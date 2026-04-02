@@ -428,7 +428,7 @@ console.log("client:", window.supabaseClient)
     let selectedBatterId = '';
     let practiceGoal = "Fielding + hitting + confidence";
     let practiceNotesByGoal = JSON.parse(localStorage.getItem('practiceNotesByGoal') || '{}');
-    let trainingByGoal = JSON.parse(localStorage.getItem('trainingByGoal') || '{}');
+    let trainingResource = JSON.parse(localStorage.getItem('trainingResource') || '{}');
     let csvRows = [];
     let csvHeaders = [];
     let importPreview = [];
@@ -678,12 +678,11 @@ log.innerHTML = selectedPlayerLog.length ? selectedPlayerLog.map(e => `
 
       document.getElementById('practicePlan').innerHTML = buildPracticePlan(practiceGoal).map((step, idx) => `<div class="plan-step">${idx + 1}. ${step}</div>`).join('');
       const savedPracticeNote = practiceNotesByGoal[practiceGoal] || '';
-document.getElementById('practiceNotesInput').value = savedPracticeNote;
-      const savedTraining = trainingByGoal[practiceGoal] || {};
-document.getElementById('trainingTitleInput').value = savedTraining.title || '';
-document.getElementById('trainingLinkInput').value = savedTraining.link || '';
-document.getElementById('trainingCategoryInput').value = savedTraining.category || '';
-document.getElementById('trainingCoachNoteInput').value = savedTraining.coachNote || '';
+      document.getElementById('practiceNotesInput').value = savedPracticeNote;
+      document.getElementById('trainingTitleInput').value = trainingResource.title || '';
+      document.getElementById('trainingLinkInput').value = trainingResource.link || '';
+      document.getElementById('trainingCategoryInput').value = trainingResource.category || '';
+      document.getElementById('trainingCoachNoteInput').value = trainingResource.coachNote || '';
       renderImportPreview();
 
       document.getElementById('rosterTable').innerHTML = players.map((p, idx) => `
@@ -1087,10 +1086,10 @@ render();
     document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
     document.getElementById('applyCsvBtn').addEventListener('click', applyCsvImport);
     document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
-    document.getElementById('trainingTitleInput').addEventListener('input', (e) => { trainingByGoal[practiceGoal] = trainingByGoal[practiceGoal] || {}; trainingByGoal[practiceGoal].title = e.target.value; localStorage.setItem('trainingByGoal', JSON.stringify(trainingByGoal)); });
-    document.getElementById('trainingLinkInput').addEventListener('input', (e) => { trainingByGoal[practiceGoal] = trainingByGoal[practiceGoal] || {}; trainingByGoal[practiceGoal].link = e.target.value; localStorage.setItem('trainingByGoal', JSON.stringify(trainingByGoal)); });
-    document.getElementById('trainingCategoryInput').addEventListener('input', (e) => { trainingByGoal[practiceGoal] = trainingByGoal[practiceGoal] || {}; trainingByGoal[practiceGoal].category = e.target.value; localStorage.setItem('trainingByGoal', JSON.stringify(trainingByGoal)); });
-    document.getElementById('trainingCoachNoteInput').addEventListener('input', (e) => { trainingByGoal[practiceGoal] = trainingByGoal[practiceGoal] || {}; trainingByGoal[practiceGoal].coachNote = e.target.value; localStorage.setItem('trainingByGoal', JSON.stringify(trainingByGoal)); });  
+    document.getElementById('trainingTitleInput').addEventListener('input', (e) => { trainingResource.title = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
+    document.getElementById('trainingLinkInput').addEventListener('input', (e) => { trainingResource.link = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
+    document.getElementById('trainingCategoryInput').addEventListener('input', (e) => { trainingResource.category = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
+    document.getElementById('trainingCoachNoteInput').addEventListener('input', (e) => { trainingResource.coachNote = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });  
 renderTabs();
 loadGameState();
 loadPlayersFromDB();
