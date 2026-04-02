@@ -299,9 +299,10 @@ console.log("client:", window.supabaseClient)
       <input id="trainingTitleInput" placeholder="Example: 3-step outfield drill" />
     </div>
     <div>
-      <label>Link</label>
-      <input id="trainingLinkInput" placeholder="Paste video or drill link" />
-    </div>
+  <label>Link</label>
+  <input id="trainingLinkInput" placeholder="Paste video or drill link" />
+  <div id="trainingLinkDisplay" style="margin-top:8px;"></div>
+</div>
     <div>
       <label>Category</label>
       <input id="trainingCategoryInput" placeholder="Example: Fielding, Hitting, Throwing" />
@@ -681,6 +682,10 @@ log.innerHTML = selectedPlayerLog.length ? selectedPlayerLog.map(e => `
       document.getElementById('practiceNotesInput').value = savedPracticeNote;
       document.getElementById('trainingTitleInput').value = trainingResource.title || '';
       document.getElementById('trainingLinkInput').value = trainingResource.link || '';
+      const trainingLink = trainingResource.link || '';
+      document.getElementById('trainingLinkDisplay').innerHTML = trainingLink
+  ? `<a href="${trainingLink}" target="_blank" rel="noopener noreferrer">Open video / drill</a>`
+  : '';
       document.getElementById('trainingCategoryInput').value = trainingResource.category || '';
       document.getElementById('trainingCoachNoteInput').value = trainingResource.coachNote || '';
       renderImportPreview();
