@@ -274,7 +274,13 @@ console.log("client:", window.supabaseClient)
         <div class="card">
           <div class="card-head"><h3>Practice builder</h3></div>
           <div class="card-body stack">
-            <div><label>Practice goal</label><input id="practiceGoalInput" value="Fielding + hitting + confidence" /></div>
+            <div>
+  <label>Practice goal</label>
+  <input id="practiceGoalInput" value="Fielding + hitting + confidence" />
+</div>
+<div>
+  <button id="generateCoachResourcesBtn" type="button">Generate coach resources</button>
+</div>
             <div class="note">
               <div style="font-weight:700;margin-bottom:10px">Suggested plan</div>
               <div id="practicePlan" class="stack"></div>
@@ -562,6 +568,57 @@ function resetPitch() {
         "10 min live reps / scrimmage"
       ];
     }
+ function generateCoachResourcesFromGoal(goal) {
+  const lower = goal.toLowerCase();
+
+  let notes = '';
+  let title = '';
+  let category = '';
+  let coachNote = '';
+
+  if (lower.includes('confidence')) {
+    notes = 'Keep feedback short and positive. Build an early win into practice, keep lines moving, and let the boys compete at the end.';
+    title = 'Confidence round + short hop glove work';
+    category = 'Confidence / Fielding';
+    coachNote = 'Use easy early reps to help the boys settle in, then build toward faster game-speed work.';
+  } else if (lower.includes('fielding')) {
+    notes = 'Stay low, work through the ball, and keep feet active. Focus on clean glove work and quick throws.';
+    title = 'Rapid-fire ground ball series';
+    category = 'Fielding';
+    coachNote = 'This is good for cleaning up footwork, glove presentation, and getting rid of the ball faster.';
+  } else if (lower.includes('hitting')) {
+    notes = 'Keep the message simple: balance first, see it, and hit it hard. Do not overload them with too many cues.';
+    title = 'Tee work to middle + front toss progression';
+    category = 'Hitting';
+    coachNote = 'Start with controlled contact work, then move into front toss so timing and confidence build naturally.';
+  } else {
+    notes = 'Keep practice moving, use one coaching cue at a time, and finish with something competitive and fun.';
+    title = 'Team fundamentals circuit';
+    category = 'General';
+    coachNote = 'This works as a simple all-around resource when the goal includes multiple focus areas.';
+  }
+
+  practiceNotesByGoal[practiceGoal] = notes;
+  localStorage.setItem('practiceNotesByGoal', JSON.stringify(practiceNotesByGoal));
+
+  trainingResource.title = title;
+  trainingResource.category = category;
+  trainingResource.coachNote = coachNote;
+  localStorage.setItem('trainingResource', JSON.stringify(trainingResource));
+
+  render();
+}
+
+  practiceNotesByGoal[practiceGoal] = notes;
+  localStorage.setItem('practiceNotesByGoal', JSON.stringify(practiceNotesByGoal));
+
+  trainingResource.title = title;
+  trainingResource.category = category;
+  trainingResource.coachNote = coachNote;
+  localStorage.setItem('trainingResource', JSON.stringify(trainingResource));
+
+  render();
+}
     function hitterSummary() {
       const summary = {};
       players.forEach((p) => {
@@ -1094,7 +1151,8 @@ render();
     document.getElementById('trainingTitleInput').addEventListener('input', (e) => { trainingResource.title = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
     document.getElementById('trainingLinkInput').addEventListener('input', (e) => { trainingResource.link = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
     document.getElementById('trainingCategoryInput').addEventListener('input', (e) => { trainingResource.category = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
-    document.getElementById('trainingCoachNoteInput').addEventListener('input', (e) => { trainingResource.coachNote = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });  
+    document.getElementById('trainingCoachNoteInput').addEventListener('input', (e) => { trainingResource.coachNote = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); }); 
+    document.getElementById('generateCoachResourcesBtn').addEventListener('click', () => generateCoachResourcesFromGoal(practiceGoal));
 renderTabs();
 loadGameState();
 loadPlayersFromDB();
