@@ -288,7 +288,7 @@ console.log("client:", window.supabaseClient)
             <div class="note">Build confidence before correction. One small win changes a kid fast.</div>
             <div class="note">Use one cue at a time. Example: “Balance first.”</div>
             <div class="note">End with competition or live reps so practice feels fun.</div>
-            <textarea>Custom practice notes...</textarea>
+            <textarea id="practiceNotesInput" placeholder="Custom practice notes..."></textarea>
           </div>
         </div>
       </div>
@@ -406,6 +406,7 @@ console.log("client:", window.supabaseClient)
     let selectedPitcherId = '';
     let selectedBatterId = '';
     let practiceGoal = "Fielding + hitting + confidence";
+    let practiceNotesByGoal = JSON.parse(localStorage.getItem('practiceNotesByGoal') || '{}');
     let csvRows = [];
     let csvHeaders = [];
     let importPreview = [];
@@ -654,7 +655,8 @@ log.innerHTML = selectedPlayerLog.length ? selectedPlayerLog.map(e => `
       }).join('');
 
       document.getElementById('practicePlan').innerHTML = buildPracticePlan(practiceGoal).map((step, idx) => `<div class="plan-step">${idx + 1}. ${step}</div>`).join('');
-
+      const savedPracticeNote = practiceNotesByGoal[practiceGoal] || '';
+document.getElementById('practiceNotesInput').value = savedPracticeNote;
       renderImportPreview();
 
       document.getElementById('rosterTable').innerHTML = players.map((p, idx) => `
@@ -1050,6 +1052,7 @@ render();
 }
     document.getElementById('opponentInput').addEventListener('input', render);
     document.getElementById('practiceGoalInput').addEventListener('input', (e) => { practiceGoal = e.target.value; render(); });
+    document.getElementById('practiceNotesInput').addEventListener('input', (e) => { practiceNotesByGoal[practiceGoal] = e.target.value; localStorage.setItem('practiceNotesByGoal', JSON.stringify(practiceNotesByGoal)); });
     document.getElementById('pitcherSelect').addEventListener('change', (e) => { selectedPitcherId = e.target.value; ensurePitchTracker(selectedPitcherId); saveGameState(); render(); });
     document.getElementById('batterSelect').addEventListener('change', (e) => { selectedBatterId = e.target.value; saveGameState(); render(); });
     document.getElementById('inningsInput').addEventListener('input', (e) => { const currentPitchTracker = getCurrentPitchTracker(); currentPitchTracker.inningsPitched = Number(e.target.value || 0); saveGameState(); render(); });
