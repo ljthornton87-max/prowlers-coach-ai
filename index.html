@@ -609,16 +609,6 @@ function resetPitch() {
   render();
 }
 
-  practiceNotesByGoal[practiceGoal] = notes;
-  localStorage.setItem('practiceNotesByGoal', JSON.stringify(practiceNotesByGoal));
-
-  trainingResource.title = title;
-  trainingResource.category = category;
-  trainingResource.coachNote = coachNote;
-  localStorage.setItem('trainingResource', JSON.stringify(trainingResource));
-
-  render();
-}
     function hitterSummary() {
       const summary = {};
       players.forEach((p) => {
