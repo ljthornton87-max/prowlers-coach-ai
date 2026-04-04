@@ -579,7 +579,32 @@ function resetPitch() {
   let category = '';
   let coachNote = '';
 
-  if (lower.includes('confidence')) {
+  if (lower.includes('hitting') && lower.includes('confidence')) {
+    notes = 'Keep the message simple and positive. Start with easy barrel contact, praise small wins early, and build toward game-speed swings.';
+    title = 'Middle-of-the-field tee work + confidence round';
+    category = 'Hitting / Confidence';
+    coachNote = 'This is good when the team needs clean swings and quick early success to build belief at the plate.';
+  } else if (lower.includes('fielding') && lower.includes('throwing')) {
+    notes = 'Stay low, funnel clean, and get rid of the ball with purpose. Focus on footwork first, then accurate throws.';
+    title = 'Rapid-fire ground balls + quick transfer throwing';
+    category = 'Fielding / Throwing';
+    coachNote = 'This helps clean up glove-to-hand transfer, body control, and strong game-ready throws.';
+  } else if (lower.includes('catching') && lower.includes('pitching')) {
+    notes = 'Focus on receiving, blocking, target work, and pitcher rhythm. Keep reps short and game-like.';
+    title = 'Bullpen target work + catcher block and receive series';
+    category = 'Catching / Pitching';
+    coachNote = 'This is good for battery work, helping pitchers throw with intent while catchers lead the rep.';
+  } else if (lower.includes('base running')) {
+    notes = 'Focus on first-step quickness, rounding with control, and aggressive but smart reads.';
+    title = 'First-step explosion + turn-the-bag base running drill';
+    category = 'Base Running';
+    coachNote = 'This helps the boys move faster without getting sloppy and builds game-speed habits on the bases.';
+  } else if (lower.includes('game readiness')) {
+    notes = 'Keep practice crisp, loud, and game-like. Mix short defensive reps, live reads, and pressure situations.';
+    title = 'Pre-game defense + situational team reps';
+    category = 'Game Readiness';
+    coachNote = 'This works well when the goal is to get the team locked in for a game or tournament day.';
+  } else if (lower.includes('confidence')) {
     notes = 'Keep feedback short and positive. Build an early win into practice, keep lines moving, and let the boys compete at the end.';
     title = 'Confidence round + short hop glove work';
     category = 'Confidence / Fielding';
@@ -594,6 +619,21 @@ function resetPitch() {
     title = 'Tee work to middle + front toss progression';
     category = 'Hitting';
     coachNote = 'Start with controlled contact work, then move into front toss so timing and confidence build naturally.';
+  } else if (lower.includes('throwing')) {
+    notes = 'Focus on grip, direction, and finishing through the throw. Keep the feet working and the arm path clean.';
+    title = 'Quick feet + partner throwing progression';
+    category = 'Throwing';
+    coachNote = 'This helps build better throwing habits without overcomplicating the work.';
+  } else if (lower.includes('catching')) {
+    notes = 'Work on receiving quietly, blocking in front, and being loud behind the plate.';
+    title = 'Receive, block, and recover catcher series';
+    category = 'Catching';
+    coachNote = 'This is good for catcher confidence, body control, and game leadership.';
+  } else if (lower.includes('pitching')) {
+    notes = 'Keep the delivery simple, repeatable, and under control. Focus on balance, target, and finish.';
+    title = 'Balance point + target bullpen work';
+    category = 'Pitching';
+    coachNote = 'This helps pitchers slow the game down and throw more strikes with intent.';
   } else {
     notes = 'Keep practice moving, use one coaching cue at a time, and finish with something competitive and fun.';
     title = 'Team fundamentals circuit';
@@ -611,7 +651,6 @@ function resetPitch() {
 
   render();
 }
-
     function hitterSummary() {
       const summary = {};
       players.forEach((p) => {
