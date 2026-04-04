@@ -280,9 +280,31 @@ console.log("client:", window.supabaseClient)
   <div class="small" style="margin-top:6px;">
     Try goals like: hitting, fielding, confidence, throwing, catching, base running, pitching, game readiness, or combo goals like hitting + confidence or fielding + throwing.
   </div>
+ <div class="small" style="margin-top:4px;">
+  Best results come from short skill-based goals, not long sentences.
+</div>             
+</div>
+            <div>
+  <label>Suggested goals</label>
+  <select id="practiceGoalPreset">
+    <option value="">Select a suggested goal</option>
+    <option value="hitting">hitting</option>
+    <option value="fielding">fielding</option>
+    <option value="confidence">confidence</option>
+    <option value="throwing">throwing</option>
+    <option value="catching">catching</option>
+    <option value="pitching">pitching</option>
+    <option value="base running">base running</option>
+    <option value="game readiness">game readiness</option>
+    <option value="hitting + confidence">hitting + confidence</option>
+    <option value="fielding + throwing">fielding + throwing</option>
+    <option value="catching + pitching">catching + pitching</option>
+  </select>
 </div>
 <div>
   <button id="generateCoachResourcesBtn" type="button">Generate coach resources</button>
+  <div class="small" style="margin-top:4px;">
+  Generates practice notes, drill title, category, and coach note from the goal above.
 </div>
             <div class="note">
               <div style="font-weight:700;margin-bottom:10px">Suggested plan</div>
