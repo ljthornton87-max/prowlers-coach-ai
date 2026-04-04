@@ -270,157 +270,162 @@ console.log("client:", window.supabaseClient)
     </div>
 
     <div id="practice" class="tab">
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-head"><h3>Practice builder</h3></div>
-          <div class="card-body stack">
-            <div>
-  <label>Practice goal</label>
-  <input id="practiceGoalInput" value="Fielding + hitting + confidence" />
-  <div class="small" style="margin-top:8px; line-height:1.4;">
-  Use short goals like <strong>hitting</strong>, <strong>fielding</strong>, <strong>confidence</strong>, <strong>throwing</strong>, <strong>catching</strong>, <strong>pitching</strong>, <strong>base running</strong>, <strong>game readiness</strong>, or combos like <strong>hitting + confidence</strong>.
-</div>    
-</div>
-            <div>
-  <label>Suggested goals</label>
-  <select id="practiceGoalPreset">
-    <option value="">Select a suggested goal</option>
-    <option value="hitting">hitting</option>
-    <option value="fielding">fielding</option>
-    <option value="confidence">confidence</option>
-    <option value="throwing">throwing</option>
-    <option value="catching">catching</option>
-    <option value="pitching">pitching</option>
-    <option value="base running">base running</option>
-    <option value="game readiness">game readiness</option>
-    <option value="hitting + confidence">hitting + confidence</option>
-    <option value="fielding + throwing">fielding + throwing</option>
-    <option value="catching + pitching">catching + pitching</option>
-  </select>
-</div>
-<div>
-  <button id="generateCoachResourcesBtn" type="button">Generate coach resources</button>
-  <div class="small" style="margin-top:4px;">
-  Generates practice notes, drill title, category, and coach note from the goal above.
-</div>
-            <div class="note">
-              <div style="font-weight:700;margin-bottom:10px">Suggested plan</div>
-              <div id="practicePlan" class="stack"></div>
-            </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head"><h3>Practice builder</h3></div>
+      <div class="card-body stack">
+        <div>
+          <label>Practice goal</label>
+          <input id="practiceGoalInput" value="Fielding + hitting + confidence" />
+          <div class="small" style="margin-top:8px; line-height:1.4;">
+            Use short goals like <strong>hitting</strong>, <strong>fielding</strong>, <strong>confidence</strong>, <strong>throwing</strong>, <strong>catching</strong>, <strong>pitching</strong>, <strong>base running</strong>, <strong>game readiness</strong>, or combos like <strong>hitting + confidence</strong>.
           </div>
         </div>
-        <div class="card">
-          <div class="card-head"><h3>Coach notes</h3></div>
-          <div class="card-body stack">
-            <div class="note">Keep lines moving. At 9U, standing around kills focus.</div>
-            <div class="note">Build confidence before correction. One small win changes a kid fast.</div>
-            <div class="note">Use one cue at a time. Example: “Balance first.”</div>
-            <div class="note">End with competition or live reps so practice feels fun.</div>
-            <textarea id="practiceNotesInput" placeholder="Custom practice notes..."></textarea>
-          </div>
-        </div>
-        <div class="card">
-  <div class="card-head">
-    <h3>Video of the Week</h3>
-    <div class="subtle">Add one featured coaching video by pasting a link or uploading a file.</div>
-  </div>
-
-  <div class="card-body stack">
-    <div class="video-week-shell">
-      <div class="video-week-top">
-        <div class="video-mode-toggle">
-          <button type="button" id="videoModeLinkBtn" class="video-mode-btn active">Paste Link</button>
-          <button type="button" id="videoModeUploadBtn" class="video-mode-btn secondary">Upload Video</button>
-        </div>
-      </div>
-
-      <div id="videoLinkMode" class="video-mode-panel stack">
-        <div>
-          <label for="videoLinkInput"><strong>Video Link</strong></label>
-          <input
-            id="videoLinkInput"
-            type="url"
-            placeholder="Paste YouTube, Vimeo, or other video link"
-            oninput="handleVideoLinkChange()"
-          />
-        </div>
-      </div>
-
-      <div id="videoUploadMode" class="video-mode-panel stack" style="display:none;">
-        <div>
-          <label for="videoUploadInput"><strong>Upload Video</strong></label>
-          <input
-            id="videoUploadInput"
-            type="file"
-            accept="video/*"
-            onchange="handleVideoUploadChange(event)"
-          />
-          <div class="small">MP4 works best.</div>
-        </div>
-      </div>
-
-      <div class="row-2">
-        <div>
-          <label for="videoTitleInput"><strong>Title</strong></label>
-          <input
-            id="videoTitleInput"
-            type="text"
-            placeholder="Title will auto-fill when possible"
-          />
-        </div>
 
         <div>
-          <label for="videoCategorySelect"><strong>Category</strong></label>
-          <select id="videoCategorySelect">
-            <option value="">Choose category</option>
-            <option value="Hitting">Hitting</option>
-            <option value="Fielding">Fielding</option>
-            <option value="Throwing">Throwing</option>
-            <option value="Pitching">Pitching</option>
-            <option value="Catching">Catching</option>
-            <option value="Base Running">Base Running</option>
-            <option value="Team Defense">Team Defense</option>
-            <option value="Mental Game">Mental Game</option>
-            <option value="Warmup">Warmup</option>
-            <option value="Practice Drill">Practice Drill</option>
+          <label>Suggested goals</label>
+          <select id="practiceGoalPreset">
+            <option value="">Select a suggested goal</option>
+            <option value="hitting">hitting</option>
+            <option value="fielding">fielding</option>
+            <option value="confidence">confidence</option>
+            <option value="throwing">throwing</option>
+            <option value="catching">catching</option>
+            <option value="pitching">pitching</option>
+            <option value="base running">base running</option>
+            <option value="game readiness">game readiness</option>
+            <option value="hitting + confidence">hitting + confidence</option>
+            <option value="fielding + throwing">fielding + throwing</option>
+            <option value="catching + pitching">catching + pitching</option>
           </select>
         </div>
-      </div>
 
-      <div>
-        <label for="videoCoachNote"><strong>Coach Note</strong></label>
-        <textarea
-          id="videoCoachNote"
-          placeholder="Why this video matters, what the boys should focus on, and how to use it at practice."
-        ></textarea>
-      </div>
-
-      <div class="actions">
-        <button type="button" onclick="saveVideoOfWeek()">Save Video of the Week</button>
-        <button type="button" class="secondary" onclick="clearVideoOfWeekForm()">Clear</button>
-      </div>
-
-      <div class="video-preview-card">
-        <div class="video-preview-head">
-          <div>
-            <div class="small">Preview</div>
-            <strong id="videoPreviewTitle">No video selected yet</strong>
+        <div>
+          <button id="generateCoachResourcesBtn" type="button">Generate coach resources</button>
+          <div class="small" style="margin-top:4px;">
+            Generates practice notes, drill title, category, and coach note from the goal above.
           </div>
-          <span id="videoPreviewCategory" class="video-category-pill">No category</span>
         </div>
 
-        <div id="videoPreviewArea" class="video-preview-area">
-          <div class="subtle">Your video preview will show here.</div>
+        <div class="note">
+          <div style="font-weight:700;margin-bottom:10px">Suggested plan</div>
+          <div id="practicePlan" class="stack"></div>
         </div>
+      </div>
+    </div>
 
-        <div id="videoPreviewNote" class="small"></div>
+    <div class="card">
+      <div class="card-head"><h3>Coach notes</h3></div>
+      <div class="card-body stack">
+        <div class="note">Keep lines moving. At 9U, standing around kills focus.</div>
+        <div class="note">Build confidence before correction. One small win changes a kid fast.</div>
+        <div class="note">Use one cue at a time. Example: “Balance first.”</div>
+        <div class="note">End with competition or live reps so practice feels fun.</div>
+        <textarea id="practiceNotesInput" placeholder="Custom practice notes..."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Video of the Week</h3>
+        <div class="subtle">Add one featured coaching video by pasting a link or uploading a file.</div>
+      </div>
+
+      <div class="card-body stack">
+        <div class="video-week-shell">
+          <div class="video-week-top">
+            <div class="video-mode-toggle">
+              <button type="button" id="videoModeLinkBtn" class="video-mode-btn active">Paste Link</button>
+              <button type="button" id="videoModeUploadBtn" class="video-mode-btn secondary">Upload Video</button>
+            </div>
+          </div>
+
+          <div id="videoLinkMode" class="video-mode-panel stack">
+            <div>
+              <label for="videoLinkInput"><strong>Video Link</strong></label>
+              <input
+                id="videoLinkInput"
+                type="url"
+                placeholder="Paste YouTube, Vimeo, or other video link"
+                oninput="handleVideoLinkChange()"
+              />
+            </div>
+          </div>
+
+          <div id="videoUploadMode" class="video-mode-panel stack" style="display:none;">
+            <div>
+              <label for="videoUploadInput"><strong>Upload Video</strong></label>
+              <input
+                id="videoUploadInput"
+                type="file"
+                accept="video/*"
+                onchange="handleVideoUploadChange(event)"
+              />
+              <div class="small">MP4 works best.</div>
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div>
+              <label for="videoTitleInput"><strong>Title</strong></label>
+              <input
+                id="videoTitleInput"
+                type="text"
+                placeholder="Title will auto-fill when possible"
+              />
+            </div>
+
+            <div>
+              <label for="videoCategorySelect"><strong>Category</strong></label>
+              <select id="videoCategorySelect">
+                <option value="">Choose category</option>
+                <option value="Hitting">Hitting</option>
+                <option value="Fielding">Fielding</option>
+                <option value="Throwing">Throwing</option>
+                <option value="Pitching">Pitching</option>
+                <option value="Catching">Catching</option>
+                <option value="Base Running">Base Running</option>
+                <option value="Team Defense">Team Defense</option>
+                <option value="Mental Game">Mental Game</option>
+                <option value="Warmup">Warmup</option>
+                <option value="Practice Drill">Practice Drill</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="videoCoachNote"><strong>Coach Note</strong></label>
+            <textarea
+              id="videoCoachNote"
+              placeholder="Why this video matters, what the boys should focus on, and how to use it at practice."
+            ></textarea>
+          </div>
+
+          <div class="actions">
+            <button type="button" onclick="saveVideoOfWeek()">Save Video of the Week</button>
+            <button type="button" class="secondary" onclick="clearVideoOfWeekForm()">Clear</button>
+          </div>
+
+          <div class="video-preview-card">
+            <div class="video-preview-head">
+              <div>
+                <div class="small">Preview</div>
+                <strong id="videoPreviewTitle">No video selected yet</strong>
+              </div>
+              <span id="videoPreviewCategory" class="video-category-pill">No category</span>
+            </div>
+
+            <div id="videoPreviewArea" class="video-preview-area">
+              <div class="subtle">Your video preview will show here.</div>
+            </div>
+
+            <div id="videoPreviewNote" class="small"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-      </div>
-    </div>
-
     <div id="roster" class="tab">
       <div class="grid-main">
         <div class="card">
