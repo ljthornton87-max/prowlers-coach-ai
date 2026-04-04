@@ -870,14 +870,19 @@ log.innerHTML = selectedPlayerLog.length ? selectedPlayerLog.map(e => `
       document.getElementById('practicePlan').innerHTML = buildPracticePlan(practiceGoal).map((step, idx) => `<div class="plan-step">${idx + 1}. ${step}</div>`).join('');
       const savedPracticeNote = practiceNotesByGoal[practiceGoal] || '';
       document.getElementById('practiceNotesInput').value = savedPracticeNote;
-      document.getElementById('trainingTitleInput').value = trainingResource.title || '';
-      document.getElementById('trainingLinkInput').value = trainingResource.link || '';
-      const trainingLink = trainingResource.link || '';
-      document.getElementById('trainingLinkDisplay').innerHTML = trainingLink
-  ? `<a href="${trainingLink}" target="_blank" rel="noopener noreferrer">Open video / drill</a>`
-  : '';
-      document.getElementById('trainingCategoryInput').value = trainingResource.category || '';
-      document.getElementById('trainingCoachNoteInput').value = trainingResource.coachNote || '';
+      document.getElementById('videoTitleInput').value = trainingResource.title || '';
+document.getElementById('videoLinkInput').value = trainingResource.link || '';
+document.getElementById('videoCategorySelect').value = trainingResource.category || '';
+document.getElementById('videoCoachNote').value = trainingResource.coachNote || '';
+
+document.getElementById('videoPreviewTitle').textContent = trainingResource.title || 'No video selected yet';
+document.getElementById('videoPreviewCategory').textContent = trainingResource.category || 'No category';
+document.getElementById('videoPreviewNote').textContent = trainingResource.coachNote || '';
+
+const trainingLink = trainingResource.link || '';
+document.getElementById('videoPreviewArea').innerHTML = trainingLink
+  ? `<a href="${trainingLink}" target="_blank" rel="noopener noreferrer">Open video</a>`
+  : '<div class="subtle">Your video preview will show here.</div>';
       renderImportPreview();
 
       document.getElementById('rosterTable').innerHTML = players.map((p, idx) => `
