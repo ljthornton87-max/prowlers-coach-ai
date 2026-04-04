@@ -277,12 +277,9 @@ console.log("client:", window.supabaseClient)
             <div>
   <label>Practice goal</label>
   <input id="practiceGoalInput" value="Fielding + hitting + confidence" />
-  <div class="small" style="margin-top:6px;">
-    Try goals like: hitting, fielding, confidence, throwing, catching, base running, pitching, game readiness, or combo goals like hitting + confidence or fielding + throwing.
-  </div>
- <div class="small" style="margin-top:4px;">
-  Best results come from short skill-based goals, not long sentences.
-</div>             
+  <div class="small" style="margin-top:8px; line-height:1.4;">
+  Use short goals like <strong>hitting</strong>, <strong>fielding</strong>, <strong>confidence</strong>, <strong>throwing</strong>, <strong>catching</strong>, <strong>pitching</strong>, <strong>base running</strong>, <strong>game readiness</strong>, or combos like <strong>hitting + confidence</strong>.
+</div>    
 </div>
             <div>
   <label>Suggested goals</label>
@@ -1207,6 +1204,12 @@ render();
     document.getElementById('trainingCategoryInput').addEventListener('input', (e) => { trainingResource.category = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
     document.getElementById('trainingCoachNoteInput').addEventListener('input', (e) => { trainingResource.coachNote = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); }); 
     document.getElementById('generateCoachResourcesBtn').addEventListener('click', () => generateCoachResourcesFromGoal(practiceGoal));
+    document.getElementById('practiceGoalPreset').addEventListener('change', (e) => {
+  if (!e.target.value) return;
+  practiceGoal = e.target.value;
+  document.getElementById('practiceGoalInput').value = practiceGoal;
+  render();
+});
 renderTabs();
 loadGameState();
 loadPlayersFromDB();
