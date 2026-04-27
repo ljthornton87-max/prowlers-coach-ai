@@ -984,43 +984,52 @@ document.getElementById('newPitcher').checked = false;
 document.getElementById('newCatcher').checked = false;
 document.getElementById('newNotes').value = '';
 }
-    async function loadPlayersFromDB() {
+   async function loadPlayersFromDB() {
   const { data, error } = await supabaseClient
     .from('players')
     .select('*')
-   .order('sort_order', { ascending: true });
+    .order('sort_order', { ascending: true });
 
   if (error) {
     console.error('Supabase load error:', error);
+    render();
     return;
   }
 
   console.log('Players from DB:', data);
 
- players = data.map(p => ({
-  id: p.id,
-  name: p.name || '',
-  contact: p.contact || 5,
-  speed: p.speed || 5,
-  fielding: p.fielding || 5,
-  arm: p.arm || 5,
-  confidence: p.confidence || 5,
-  pitcher: p.positions ? p.positions.split(',').map(x => x.trim()).includes('P') : false,
-  catcher: p.positions ? p.positions.split(',').map(x => x.trim()).includes('C') : false,
-  positions: p.positions ? p.positions.split(',').map(x => x.trim()).filter(Boolean) : ['OF'],
-  notes: ''
-}));
+  // IMPORTANT:
+  // If Supabase has no players yet, keep the hardcoded roster instead of wiping it out.
+  if (!data || data.length === 0) {
+    console.warn('No players found in Supabase. Keeping starter roster from file.');
+    render();
+    return;
+  }
 
-if (!selectedBatterId && players.length) {
-  selectedBatterId = players[0].id;
-}
+  players = data.map(p => ({
+    id: p.id,
+    name: p.name || '',
+    contact: p.contact || 5,
+    speed: p.speed || 5,
+    fielding: p.fielding || 5,
+    arm: p.arm || 5,
+    confidence: p.confidence || 5,
+    pitcher: p.positions ? p.positions.split(',').map(x => x.trim()).includes('P') : false,
+    catcher: p.positions ? p.positions.split(',').map(x => x.trim()).includes('C') : false,
+    positions: p.positions ? p.positions.split(',').map(x => x.trim()).filter(Boolean) : ['OF'],
+    notes: ''
+  }));
 
-const markedPitchers = players.filter(p => p.pitcher);
-if (!selectedPitcherId && markedPitchers.length) {
-  selectedPitcherId = markedPitchers[0].id;
-}
+  if (!selectedBatterId && players.length) {
+    selectedBatterId = players[0].id;
+  }
 
-render();
+  const markedPitchers = players.filter(p => p.pitcher);
+  if (!selectedPitcherId && markedPitchers.length) {
+    selectedPitcherId = markedPitchers[0].id;
+  }
+
+  render();
 }
 async function updatePlayerField(id, field, value) {
   let dbValue = value;
