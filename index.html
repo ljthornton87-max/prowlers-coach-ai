@@ -1286,10 +1286,29 @@ render();
     document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
     document.getElementById('applyCsvBtn').addEventListener('click', applyCsvImport);
     document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
-    document.getElementById('trainingTitleInput').addEventListener('input', (e) => { trainingResource.title = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
-    document.getElementById('trainingLinkInput').addEventListener('input', (e) => { trainingResource.link = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
-    document.getElementById('trainingCategoryInput').addEventListener('input', (e) => { trainingResource.category = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); });
-    document.getElementById('trainingCoachNoteInput').addEventListener('input', (e) => { trainingResource.coachNote = e.target.value; localStorage.setItem('trainingResource', JSON.stringify(trainingResource)); }); 
+    document.getElementById('videoTitleInput').addEventListener('input', (e) => {
+  trainingResource.title = e.target.value;
+  localStorage.setItem('trainingResource', JSON.stringify(trainingResource));
+  render();
+});
+
+document.getElementById('videoLinkInput').addEventListener('input', (e) => {
+  trainingResource.link = e.target.value;
+  localStorage.setItem('trainingResource', JSON.stringify(trainingResource));
+  render();
+});
+
+document.getElementById('videoCategorySelect').addEventListener('change', (e) => {
+  trainingResource.category = e.target.value;
+  localStorage.setItem('trainingResource', JSON.stringify(trainingResource));
+  render();
+});
+
+document.getElementById('videoCoachNote').addEventListener('input', (e) => {
+  trainingResource.coachNote = e.target.value;
+  localStorage.setItem('trainingResource', JSON.stringify(trainingResource));
+  render();
+});
     document.getElementById('generateCoachResourcesBtn').addEventListener('click', () => generateCoachResourcesFromGoal(practiceGoal));
     document.getElementById('practiceGoalPreset').addEventListener('change', (e) => {
   if (!e.target.value) return;
