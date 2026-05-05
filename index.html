@@ -1113,16 +1113,22 @@ function renderVideoResource() {
   previewCategory.textContent = trainingResource.category || 'No category';
   previewNote.textContent = trainingResource.coachNote || '';
 
-  if (trainingResource.sourceType === 'upload' && trainingResource.uploadUrl) {
+   if (trainingResource.sourceType === 'upload' && trainingResource.uploadUrl) {
+    const thumbnailMarkup = trainingResource.thumbnailUrl
+      ? `<img src="${trainingResource.thumbnailUrl}" alt="Video thumbnail" style="width:100%;max-height:260px;object-fit:cover;border-radius:14px;display:block;margin-bottom:10px;">`
+      : '';
+
     previewArea.innerHTML = `
-      <video controls style="width:100%;max-height:260px;border-radius:14px;">
-        <source src="${trainingResource.uploadUrl}">
-        Your browser does not support this video preview.
-      </video>
+      <div style="width:100%;">
+        ${thumbnailMarkup}
+        <video controls style="width:100%;max-height:260px;border-radius:14px;">
+          <source src="${trainingResource.uploadUrl}">
+          Your browser does not support this video preview.
+        </video>
+      </div>
     `;
     return;
   }
-
   if (trainingResource.link) {
     previewArea.innerHTML = `<a class="video-open-link" href="${trainingResource.link}" target="_blank" rel="noopener noreferrer">Open training video</a>`;
     return;
