@@ -1040,12 +1040,18 @@ function handleVideoUploadChange(event) {
   trainingResource.sourceType = 'upload';
   trainingResource.uploadName = file.name;
   trainingResource.uploadUrl = uploadUrl;
+  trainingResource.thumbnailUrl = '';
   trainingResource.link = '';
   trainingResource.title = title;
   trainingResource.category = category;
   trainingResource.coachNote = buildVideoCoachNote(title, category);
 
   saveTrainingResource(false);
+
+  createVideoThumbnail(file, (thumbnailUrl) => {
+    trainingResource.thumbnailUrl = thumbnailUrl;
+    saveTrainingResource(false);
+  });
 }
 
 function saveVideoOfWeek() {
