@@ -1002,7 +1002,33 @@ function handleVideoLinkChange() {
 
   saveTrainingResource(false);
 }
+function createVideoThumbnail(file, callback) {
+  const video = document.createElement('video');
+  const canvas = document.createElement('canvas');
+  const videoUrl = URL.createObjectURL(file);
 
+  video.preload = 'metadata';
+  video.muted = true;
+  video.playsInline = true;
+  video.src = videoUrl;
+
+  video.addEventListener('loadedmetadata', () => {
+    video.currentTime = Math.min(1, video.duration / 2);
+  });
+
+  video.addEventListener('seeked', () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const thumbnailUrl = canvas.toDataURL('image/jpeg', 0.75);
+    URL.revokeObjectURL(videoUrl);
+
+    callback(thumbnailUrl);
+  });
+}
 function handleVideoUploadChange(event) {
   const file = event.target.files && event.target.files[0];
   if (!file) return;
