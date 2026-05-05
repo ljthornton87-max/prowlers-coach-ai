@@ -888,6 +888,216 @@ function resetPitch() {
 
   render();
 }
+    function saveTrainingResource(shouldShowSaved = false) {
+  localStorage.setItem('trainingResource', JSON.stringify(trainingResource));
+  renderVideoResource();
+
+  const hint = document.getElementById('videoSaveHint');
+  if (hint && shouldShowSaved) {
+    hint.textContent = 'Saved as this week’s featured video';
+  } else if (hint) {
+    hint.textContent = 'Draft saved locally';
+  }
+}
+
+function cleanVideoTitleFromText(text) {
+  if (!text) return '';
+
+  let cleanText = text;
+
+  try {
+    const url = new URL(text);
+    const pathParts = url.pathname.split('/').filter(Boolean);
+    cleanText = pathParts[pathParts.length - 1] || url.hostname.replace('www.', '');
+  } catch (error) {
+    cleanText = text;
+  }
+
+  cleanText = cleanText
+    .replace(/\.[^/.]+$/, '')
+    .replace(/[-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleanText || /^\d+$/.test(cleanText)) {
+    return 'Training video for this week';
+  }
+
+  return cleanText
+    .split(' ')
+    .map(word => word ? word[0].toUpperCase() + word.slice(1) : '')
+    .join(' ');
+}
+
+function inferVideoCategory(text) {
+  const lower = (text || '').toLowerCase();
+
+  if (lower.includes('hit') || lower.includes('bat') || lower.includes('swing') || lower.includes('tee')) return 'Hitting';
+  if (lower.includes('field') || lower.includes('ground') || lower.includes('infield') || lower.includes('outfield') || lower.includes('footwork')) return 'Fielding';
+  if (lower.includes('throw') || lower.includes('arm')) return 'Throwing';
+  if (lower.includes('pitch')) return 'Pitching';
+  if (lower.includes('catch') || lower.includes('block') || lower.includes('receive')) return 'Catching';
+  if (lower.includes('run') || lower.includes('steal') || lower.includes('base')) return 'Base Running';
+  if (lower.includes('warm')) return 'Warmup';
+  if (lower.includes('mental') || lower.includes('confidence')) return 'Mental Game';
+
+  return 'Practice Drill';
+}
+
+function buildVideoCoachNote(title, category) {
+  if (!title && !category) return '';
+
+  if (category === 'Hitting') return 'Use this to give the boys one simple hitting focus before live reps. Keep the cue short and let them compete.';
+  if (category === 'Fielding') return 'Use this for clean glove work, better feet, and faster confidence on defense.';
+  if (category === 'Throwing') return 'Use this to reinforce direction, balance, and finishing through the throw.';
+  if (category === 'Pitching') return 'Use this to keep pitchers simple, balanced, and focused on throwing strikes.';
+  if (category === 'Catching') return 'Use this to build receiving, blocking, and leadership behind the plate.';
+  if (category === 'Base Running') return 'Use this to teach smart, aggressive base running without overcomplicating it.';
+  if (category === 'Mental Game') return 'Use this to build confidence, focus, and a next-play mindset.';
+  if (category === 'Warmup') return 'Use this to get the boys moving with purpose before practice or games.';
+
+  return 'Use this as the featured drill for the week. Keep the teaching point simple and connect it to the next practice plan.';
+}
+
+function setVideoMode(mode) {
+  const linkMode = document.getElementById('videoLinkMode');
+  const uploadMode = document.getElementById('videoUploadMode');
+  const linkBtn = document.getElementById('videoModeLinkBtn');
+  const uploadBtn = document.getElementById('videoModeUploadBtn');
+
+  if (!linkMode || !uploadMode || !linkBtn || !uploadBtn) return;
+
+  const isUpload = mode === 'upload';
+
+  linkMode.style.display = isUpload ? 'none' : 'grid';
+  uploadMode.style.display = isUpload ? 'grid' : 'none';
+
+  linkBtn.classList.toggle('active', !isUpload);
+  uploadBtn.classList.toggle('active', isUpload);
+
+  trainingResource.sourceType = isUpload ? 'upload' : 'link';
+  saveTrainingResource(false);
+}
+
+function handleVideoLinkChange() {
+  const linkInput = document.getElementById('videoLinkInput');
+  const value = linkInput ? linkInput.value.trim() : '';
+
+  trainingResource.sourceType = 'link';
+  trainingResource.link = value;
+  trainingResource.uploadName = '';
+  trainingResource.uploadUrl = '';
+
+  if (value && !trainingResource.title) {
+    trainingResource.title = cleanVideoTitleFromText(value);
+  }
+
+  if (value && !trainingResource.category) {
+    trainingResource.category = inferVideoCategory(value);
+  }
+
+  if (value && !trainingResource.coachNote) {
+    trainingResource.coachNote = buildVideoCoachNote(trainingResource.title, trainingResource.category);
+  }
+
+  saveTrainingResource(false);
+}
+
+function handleVideoUploadChange(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const uploadUrl = URL.createObjectURL(file);
+  const title = cleanVideoTitleFromText(file.name);
+  const category = inferVideoCategory(file.name);
+
+  trainingResource.sourceType = 'upload';
+  trainingResource.uploadName = file.name;
+  trainingResource.uploadUrl = uploadUrl;
+  trainingResource.link = '';
+  trainingResource.title = title;
+  trainingResource.category = category;
+  trainingResource.coachNote = buildVideoCoachNote(title, category);
+
+  saveTrainingResource(false);
+}
+
+function saveVideoOfWeek() {
+  const titleInput = document.getElementById('videoTitleInput');
+  const linkInput = document.getElementById('videoLinkInput');
+  const categorySelect = document.getElementById('videoCategorySelect');
+  const noteInput = document.getElementById('videoCoachNote');
+
+  const sourceType = trainingResource.sourceType || 'link';
+  const title = titleInput ? titleInput.value.trim() : '';
+  const link = linkInput ? linkInput.value.trim() : '';
+  const category = categorySelect ? categorySelect.value : '';
+  const coachNote = noteInput ? noteInput.value.trim() : '';
+
+  trainingResource = {
+    ...trainingResource,
+    sourceType,
+    title: title || cleanVideoTitleFromText(link || trainingResource.uploadName || 'Training video for this week'),
+    link,
+    category: category || inferVideoCategory(title || link || trainingResource.uploadName),
+    coachNote: coachNote || buildVideoCoachNote(title, category)
+  };
+
+  saveTrainingResource(true);
+}
+
+function clearVideoOfWeekForm() {
+  trainingResource = {};
+  localStorage.setItem('trainingResource', JSON.stringify(trainingResource));
+
+  const uploadInput = document.getElementById('videoUploadInput');
+  if (uploadInput) uploadInput.value = '';
+
+  setVideoMode('link');
+  renderVideoResource();
+
+  const hint = document.getElementById('videoSaveHint');
+  if (hint) hint.textContent = 'Not saved yet';
+}
+
+function renderVideoResource() {
+  const titleInput = document.getElementById('videoTitleInput');
+  const linkInput = document.getElementById('videoLinkInput');
+  const categorySelect = document.getElementById('videoCategorySelect');
+  const noteInput = document.getElementById('videoCoachNote');
+  const previewTitle = document.getElementById('videoPreviewTitle');
+  const previewCategory = document.getElementById('videoPreviewCategory');
+  const previewNote = document.getElementById('videoPreviewNote');
+  const previewArea = document.getElementById('videoPreviewArea');
+
+  if (!titleInput || !linkInput || !categorySelect || !noteInput || !previewTitle || !previewCategory || !previewNote || !previewArea) return;
+
+  titleInput.value = trainingResource.title || '';
+  linkInput.value = trainingResource.link || '';
+  categorySelect.value = trainingResource.category || '';
+  noteInput.value = trainingResource.coachNote || '';
+
+  previewTitle.textContent = trainingResource.title || 'No video selected yet';
+  previewCategory.textContent = trainingResource.category || 'No category';
+  previewNote.textContent = trainingResource.coachNote || '';
+
+  if (trainingResource.sourceType === 'upload' && trainingResource.uploadUrl) {
+    previewArea.innerHTML = `
+      <video controls style="width:100%;max-height:260px;border-radius:14px;">
+        <source src="${trainingResource.uploadUrl}">
+        Your browser does not support this video preview.
+      </video>
+    `;
+    return;
+  }
+
+  if (trainingResource.link) {
+    previewArea.innerHTML = `<a class="video-open-link" href="${trainingResource.link}" target="_blank" rel="noopener noreferrer">Open training video</a>`;
+    return;
+  }
+
+  previewArea.innerHTML = '<div class="subtle">Paste a link or upload a video to preview it here.</div>';
+}
     function hitterSummary() {
       const summary = {};
       players.forEach((p) => {
