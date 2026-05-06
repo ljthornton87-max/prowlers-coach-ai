@@ -1053,7 +1053,36 @@ function handleVideoUploadChange(event) {
     saveTrainingResource(false);
   });
 }
+function isFacebookVideoLink(url) {
+  return /facebook\.com|fb\.watch/i.test(url || '');
+}
 
+function buildFacebookEmbedUrl(url) {
+  return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&width=734`;
+}
+
+function isYouTubeLink(url) {
+  return /youtube\.com|youtu\.be/i.test(url || '');
+}
+
+function buildYouTubeEmbedUrl(url) {
+  try {
+    const parsedUrl = new URL(url);
+    let videoId = '';
+
+    if (parsedUrl.hostname.includes('youtu.be')) {
+      videoId = parsedUrl.pathname.replace('/', '');
+    } else if (parsedUrl.searchParams.get('v')) {
+      videoId = parsedUrl.searchParams.get('v');
+    } else if (parsedUrl.pathname.includes('/shorts/')) {
+      videoId = parsedUrl.pathname.split('/shorts/')[1].split('/')[0];
+    }
+
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
+  } catch (error) {
+    return '';
+  }
+}
 function saveVideoOfWeek() {
   const titleInput = document.getElementById('videoTitleInput');
   const linkInput = document.getElementById('videoLinkInput');
