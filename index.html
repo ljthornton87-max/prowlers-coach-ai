@@ -1158,8 +1158,33 @@ function renderVideoResource() {
     `;
     return;
   }
-  if (trainingResource.link) {
-    previewArea.innerHTML = `<a class="video-open-link" href="${trainingResource.link}" target="_blank" rel="noopener noreferrer">Open training video</a>`;
+   if (trainingResource.link) {
+    let embedUrl = '';
+
+    if (isFacebookVideoLink(trainingResource.link)) {
+      embedUrl = buildFacebookEmbedUrl(trainingResource.link);
+    }
+
+    if (isYouTubeLink(trainingResource.link)) {
+      embedUrl = buildYouTubeEmbedUrl(trainingResource.link);
+    }
+
+    previewArea.innerHTML = embedUrl
+      ? `
+        <div style="width:100%;">
+          <iframe
+            src="${embedUrl}"
+            style="width:100%;height:360px;border:0;border-radius:14px;background:#000;"
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+          <div style="margin-top:10px;text-align:center;">
+            <a class="video-open-link" href="${trainingResource.link}" target="_blank" rel="noopener noreferrer">Open original video</a>
+          </div>
+        </div>
+      `
+      : `<a class="video-open-link" href="${trainingResource.link}" target="_blank" rel="noopener noreferrer">Open training video</a>`;
+
     return;
   }
 
