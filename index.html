@@ -1342,11 +1342,11 @@ log.innerHTML = selectedPlayerLog.length ? selectedPlayerLog.map(e => `
             <div><strong>${p.name}</strong></div>
             <input value="${p.positions.join(', ').replace(/"/g, '&quot;')}" onchange="updatePlayerPositions('${p.id}', this.value)" style="margin-top:6px;font-size:12px" />
           </td>
-          <td><span class="rating-pill ${ratingClass(p.contact)}">${p.contact}</span></td>
-          <td><span class="rating-pill ${ratingClass(p.speed)}">${p.speed}</span></td>
-          <td><span class="rating-pill ${ratingClass(p.fielding)}">${p.fielding}</span></td>
-          <td><span class="rating-pill ${ratingClass(p.arm)}">${p.arm}</span></td>
-          <td><span class="rating-pill ${ratingClass(p.confidence)}">${p.confidence}</span></td>
+          <td><span class="rating-pill ${ratingClass(p.contact)}">${ratingDisplay(p.contact)}</span></td>
+<td><span class="rating-pill ${ratingClass(p.speed)}">${ratingDisplay(p.speed)}</span></td>
+<td><span class="rating-pill ${ratingClass(p.fielding)}">${ratingDisplay(p.fielding)}</span></td>
+<td><span class="rating-pill ${ratingClass(p.arm)}">${ratingDisplay(p.arm)}</span></td>
+<td><span class="rating-pill ${ratingClass(p.confidence)}">${ratingDisplay(p.confidence)}</span></td>
           <td><input class="tiny-check" type="checkbox" ${p.pitcher ? 'checked' : ''} onchange="updatePlayerField('${p.id}', 'pitcher', this.checked)" /></td>
           <td><input class="tiny-check" type="checkbox" ${p.catcher ? 'checked' : ''} onchange="updatePlayerField('${p.id}', 'catcher', this.checked)" /></td>
           <td>
