@@ -1335,29 +1335,43 @@ log.innerHTML = selectedPlayerLog.length ? selectedPlayerLog.map(e => `
       `).join('');
     }
 
-    async function movePlayer(index, direction) {
+  async function movePlayer(index, direction) {
   const newIndex = index + direction;
   if (newIndex < 0 || newIndex >= players.length) return;
 
   [players[index], players[newIndex]] = [players[newIndex], players[index]];
 
-  for (let i = 0; i < players.length; i++) {
-  players[i].sort_order = i + 1;
+  players = players.map((player, idx) => ({
+    ...player,
+    sort_order: idx + 1
+  }));
 
-  const { error } = await supabaseClient
-    .from('players')
-    .update({ sort_order: players[i].sort_order })
-    .eq('id', players[i].id);
+  render();
 
-  if (error) {
-    console.error('Sort update error:', error);
+  try {
+    const updates = players.map(player =>
+      supabaseClient
+        .from('players')
+        .update({ sort_order: player.sort_order })
+        .eq('id', player.id)
+    );
+
+    const results = await Promise.all(updates);
+    const failed = results.find(result => result.error);
+
+    if (failed) {
+      console.error('Sort update error:', failed.error);
+      alert('Sort update failed: ' + failed.error.message);
+      await loadPlayersFromDB();
+      return;
+    }
+
+    await loadPlayersFromDB();
+  } catch (error) {
+    console.error('Sort update failed:', error);
     alert('Sort update failed: ' + error.message);
-    return;
+    await loadPlayersFromDB();
   }
-}
-
-await loadPlayersFromDB();
-render();
 }
 async function removePlayer(id) {
   const { error } = await supabaseClient
