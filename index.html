@@ -1211,6 +1211,17 @@ function renderVideoResource() {
       });
       return summary;
     }
+        }
+
+function ratingClass(value) {
+  const rating = Number(value) || 0;
+
+  if (rating >= 8) return 'rating-elite';
+  if (rating >= 6) return 'rating-good';
+  if (rating >= 4) return 'rating-ok';
+  return 'rating-low';
+}
+
 function renderTabs() {
   const buttons = document.querySelectorAll('.tab-btn');
   const tabs = document.querySelectorAll('.tab');
