@@ -243,6 +243,48 @@ tbody tr:hover { background: #f8fafc; }
   font-weight: 600;
   margin-top: 4px;
 }
+    .lineup-role-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #e0ecff;
+  color: #172554;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.lineup-why {
+  display: grid;
+  gap: 6px;
+}
+
+.lineup-why-main {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.lineup-why-detail {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.lineup-rating-strip {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lineup-mini-pill {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #334155;
+  background: #f8fafc;
+}
     .progress {
       height: 10px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin: 8px 0;
     }
@@ -1346,6 +1388,59 @@ function ratingDisplay(value) {
   const rating = Number(value) || 0;
   return rating <= 0 ? '--' : rating;
 }
+    function lineupRoleLabel(idx) {
+  if (idx === 0) return 'Leadoff';
+  if (idx === 1) return 'Table setter';
+  if (idx >= 2 && idx <= 4) return 'Run producer';
+  if (idx >= 5 && idx <= 6) return 'Pressure bat';
+  return 'Turn lineup over';
+}
+
+function lineupReasonText(p, idx) {
+  const contact = Number(p.contact) || 0;
+  const speed = Number(p.speed) || 0;
+  const confidence = Number(p.confidence) || 0;
+
+  if (contact <= 0 && speed <= 0 && confidence <= 0) {
+    return {
+      main: 'Needs CSV data before this spot is trusted.',
+      detail: 'Manual or missing ratings are being treated carefully for now.'
+    };
+  }
+
+  if (idx === 0) {
+    return {
+      main: 'Best fit to start the offense.',
+      detail: 'Prioritizes contact, speed, and confidence to get traffic early.'
+    };
+  }
+
+  if (idx === 1) {
+    return {
+      main: 'Good second bat to keep pressure on.',
+      detail: 'Built to move the leadoff hitter and avoid an empty inning.'
+    };
+  }
+
+  if (idx >= 2 && idx <= 4) {
+    return {
+      main: 'Middle-order run production spot.',
+      detail: 'Prioritizes contact and confidence with runners on base.'
+    };
+  }
+
+  if (idx >= 5 && idx <= 6) {
+    return {
+      main: 'Keeps the inning alive.',
+      detail: 'Good spot for a steady bat without putting too much pressure on him.'
+    };
+  }
+
+  return {
+    main: 'Helps turn the lineup back over.',
+    detail: 'Keeps a simple goal: compete, make contact, and get back to the top.'
+  };
+}
 function playerScore(p) {
   return (Number(p.contact) || 0) + (Number(p.speed) || 0) + (Number(p.confidence) || 0);
 }
@@ -1488,14 +1583,31 @@ function renderTabs() {
       document.getElementById('restDaysVal').textContent = currentPitchTracker.restDays;
 
       document.getElementById('hittingCues').innerHTML = hittingCues.map(c => `<div class="cue">${c}</div>`).join('');
-      document.getElementById('lineupTable').innerHTML = lineup.starters.map((p, idx) => `
-        <tr>
-          <td>${idx + 1}</td>
-          <td><strong>${p.name}</strong></td>
-          <td>${defense[idx]?.pos || ''}</td>
-          <td class="subtle">Contact ${p.contact}/10, Speed ${p.speed}/10, Confidence ${p.confidence}/10</td>
-        </tr>
-      `).join('');
+      document.getElementById('lineupTable').innerHTML = lineup.starters.map((p, idx) => {
+  const reason = lineupReasonText(p, idx);
+
+  return `
+    <tr>
+      <td>${idx + 1}</td>
+      <td><strong>${p.name}</strong></td>
+      <td>
+        <span class="lineup-role-pill">${lineupRoleLabel(idx)}</span>
+        <div class="small" style="margin-top:6px">${defense[idx]?.pos || ''}</div>
+      </td>
+      <td>
+        <div class="lineup-why">
+          <div class="lineup-why-main">${reason.main}</div>
+          <div class="lineup-why-detail">${reason.detail}</div>
+          <div class="lineup-rating-strip">
+            <span class="lineup-mini-pill">Contact ${ratingDisplay(p.contact)}</span>
+            <span class="lineup-mini-pill">Speed ${ratingDisplay(p.speed)}</span>
+            <span class="lineup-mini-pill">Confidence ${ratingDisplay(p.confidence)}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  `;
+}).join('');
 
       const benchBox = document.getElementById('benchBox');
       if (lineup.bench.length) {
