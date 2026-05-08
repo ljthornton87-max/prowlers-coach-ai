@@ -1475,19 +1475,25 @@ document.getElementById('newNotes').value = '';
     return;
   }
 
-  players = data.map(p => ({
-    id: p.id,
-    name: p.name || '',
-    contact: p.contact || 5,
-    speed: p.speed || 5,
-    fielding: p.fielding || 5,
-    arm: p.arm || 5,
-    confidence: p.confidence || 5,
-    pitcher: p.positions ? p.positions.split(',').map(x => x.trim()).includes('P') : false,
-    catcher: p.positions ? p.positions.split(',').map(x => x.trim()).includes('C') : false,
-    positions: p.positions ? p.positions.split(',').map(x => x.trim()).filter(Boolean) : ['OF'],
-    notes: ''
-  }));
+    players = data.map(p => {
+    const positionsList = p.positions
+      ? p.positions.split(',').map(x => x.trim()).filter(Boolean)
+      : ['OF'];
+
+    return {
+      id: p.id,
+      name: p.name || '',
+      contact: Number(p.contact ?? 0),
+      speed: Number(p.speed ?? 0),
+      fielding: Number(p.fielding ?? 0),
+      arm: Number(p.arm ?? 0),
+      confidence: Number(p.confidence ?? 0),
+      pitcher: positionsList.includes('P'),
+      catcher: positionsList.includes('C'),
+      positions: positionsList,
+      notes: p.notes || ''
+    };
+  });
 
   if (!selectedBatterId && players.length) {
     selectedBatterId = players[0].id;
