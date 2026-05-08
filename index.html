@@ -165,6 +165,84 @@ tbody tr:hover { background: #f8fafc; }
     button.danger { background:#dc2626; }
     button.icon { padding: 8px 10px; }
     .metric { font-size: 32px; font-weight: 800; }
+    .dashboard-card-main {
+  min-height: 172px;
+}
+
+.dashboard-kicker {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 8px;
+}
+
+.dashboard-player-list {
+  display: grid;
+  gap: 8px;
+}
+
+.dashboard-player-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.dashboard-player-name {
+  font-weight: 900;
+}
+
+.dashboard-player-detail {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.dashboard-score {
+  font-weight: 900;
+  color: #06153f;
+  white-space: nowrap;
+}
+
+.dashboard-alert {
+  border: 1px solid #fecaca;
+  background: #fff7f7;
+  color: #7f1d1d;
+}
+
+.dashboard-good {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #14532d;
+}
+
+.dashboard-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 8px;
+}
+
+.dashboard-action {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  background: #ffffff;
+  font-weight: 800;
+}
+
+.dashboard-action span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 4px;
+}
     .progress {
       height: 10px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin: 8px 0;
     }
