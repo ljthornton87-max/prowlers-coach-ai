@@ -427,12 +427,25 @@ tbody tr:hover { background: #f8fafc; }
       </div>
       <div class="grid-2" style="margin-top:16px">
         <div class="card"><div class="card-head"><h3>Hitting cues</h3></div><div class="card-body"><div id="hittingCues" class="cue-grid"></div></div></div>
-        <div class="card"><div class="card-head"><h3>Quick weekend notes</h3></div><div class="card-body stack">
-          <div class="note">Start your highest-confidence contact hitters near the top.</div>
-          <div class="note">Warm next pitcher once current arm hits orange zone.</div>
-          <div class="note">Give confidence kids early glove wins and simple offensive goals.</div>
-          <div class="note">Track just enough during games to make better next-inning decisions.</div>
-        </div></div>
+        <div class="card">
+  <div class="card-head"><h3>Coach command center</h3></div>
+  <div class="card-body stack">
+    <div>
+      <div class="dashboard-kicker">Top bats right now</div>
+      <div id="dashboardTopBats" class="dashboard-player-list"></div>
+    </div>
+
+    <div>
+      <div class="dashboard-kicker">Needs attention</div>
+      <div id="dashboardNeedsAttention" class="dashboard-player-list"></div>
+    </div>
+
+    <div>
+      <div class="dashboard-kicker">Game-day actions</div>
+      <div id="dashboardActions" class="dashboard-action-grid"></div>
+    </div>
+  </div>
+</div>
       </div>
     </div>
 
@@ -1333,7 +1346,85 @@ function ratingDisplay(value) {
   const rating = Number(value) || 0;
   return rating <= 0 ? '--' : rating;
 }
+function playerScore(p) {
+  return (Number(p.contact) || 0) + (Number(p.speed) || 0) + (Number(p.confidence) || 0);
+}
 
+function renderDashboardInsights(lineup, pitcher, pStatus, currentPitchTracker) {
+  const topBatsBox = document.getElementById('dashboardTopBats');
+  const needsBox = document.getElementById('dashboardNeedsAttention');
+  const actionsBox = document.getElementById('dashboardActions');
+
+  if (!topBatsBox || !needsBox || !actionsBox) return;
+
+  const rankedPlayers = [...players]
+    .sort((a, b) => playerScore(b) - playerScore(a));
+
+  const topBats = rankedPlayers.slice(0, 3);
+
+  topBatsBox.innerHTML = topBats.length
+    ? topBats.map((p, idx) => `
+      <div class="dashboard-player-row dashboard-good">
+        <div>
+          <div class="dashboard-player-name">${idx + 1}. ${p.name}</div>
+          <div class="dashboard-player-detail">Contact ${ratingDisplay(p.contact)} · Speed ${ratingDisplay(p.speed)} · Confidence ${ratingDisplay(p.confidence)}</div>
+        </div>
+        <div class="dashboard-score">${playerScore(p)}</div>
+      </div>
+    `).join('')
+    : `<div class="note">Add players to see top bats.</div>`;
+
+  const needsAttention = players
+    .filter(p =>
+      (Number(p.contact) || 0) <= 0 ||
+      (Number(p.speed) || 0) <= 0 ||
+      (Number(p.confidence) || 0) <= 0
+    )
+    .slice(0, 3);
+
+  needsBox.innerHTML = needsAttention.length
+    ? needsAttention.map(p => `
+      <div class="dashboard-player-row dashboard-alert">
+        <div>
+          <div class="dashboard-player-name">${p.name}</div>
+          <div class="dashboard-player-detail">Missing rating data. CSV import should clean this up.</div>
+        </div>
+        <div class="dashboard-score">--</div>
+      </div>
+    `).join('')
+    : `<div class="dashboard-player-row dashboard-good">
+        <div>
+          <div class="dashboard-player-name">Roster looks clean</div>
+          <div class="dashboard-player-detail">No missing contact, speed, or confidence ratings found.</div>
+        </div>
+      </div>`;
+
+  const warmNextPitcher = pStatus.label === 'Orange' || pStatus.label === 'Red';
+  const lineupReady = lineup.starters.length >= 9;
+  const hasPitcher = !!pitcher;
+
+  actionsBox.innerHTML = `
+    <div class="dashboard-action">
+      ${lineupReady ? 'Lineup ready' : 'Build lineup'}
+      <span>${lineupReady ? `${lineup.starters.length} starters loaded.` : 'Add enough players to create a full lineup.'}</span>
+    </div>
+
+    <div class="dashboard-action">
+      ${hasPitcher ? 'Pitcher selected' : 'Pick pitcher'}
+      <span>${hasPitcher ? `${pitcher.name} has ${currentPitchTracker.pitchCount} pitches.` : 'Select a pitcher before game start.'}</span>
+    </div>
+
+    <div class="dashboard-action">
+      ${warmNextPitcher ? 'Warm next arm' : 'Current arm okay'}
+      <span>${pStatus.text}</span>
+    </div>
+
+    <div class="dashboard-action">
+      Track simple
+      <span>Log hits, outs, RBIs, and pitch count only.</span>
+    </div>
+  `;
+}
 function renderTabs() {
   const buttons = document.querySelectorAll('.tab-btn');
   const tabs = document.querySelectorAll('.tab');
@@ -1388,6 +1479,7 @@ function renderTabs() {
       document.getElementById('dashPitchText').textContent = pStatus.text;
       document.getElementById('dashBar').style.width = pStatus.value + '%';
       document.getElementById('dashPracticeGoal').textContent = practiceGoal;
+      renderDashboardInsights(lineup, pitcher, pStatus, currentPitchTracker);
 
       document.getElementById('pitchCountBig').textContent = currentPitchTracker.pitchCount;
       document.getElementById('pitchText').textContent = pStatus.text;
