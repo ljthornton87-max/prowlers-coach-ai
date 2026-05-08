@@ -1492,8 +1492,10 @@ document.getElementById('newPitcher').checked = false;
 document.getElementById('newCatcher').checked = false;
 document.getElementById('newNotes').value = '';
 }
-   async function loadPlayersFromDB() {
+  async function loadPlayersFromDB() {
   showRosterLoading();
+
+  await new Promise(resolve => setTimeout(resolve, 150));
 
   const { data, error } = await supabaseClient
     .from('players')
@@ -1581,7 +1583,7 @@ if (field === 'pitcher' || field === 'catcher') {
   }
 
   await loadPlayersFromDB();
-render();
+  
 return;
 }
   if (['contact', 'speed', 'fielding', 'arm', 'confidence'].includes(field)) {
