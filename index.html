@@ -695,123 +695,17 @@ button:disabled {
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-head"><h3>Coach notes</h3></div>
-      <div class="card-body stack">
-        <div class="note">Keep lines moving. At 9U, standing around kills focus.</div>
-        <div class="note">Build confidence before correction. One small win changes a kid fast.</div>
-        <div class="note">Use one cue at a time. Example: “Balance first.”</div>
-        <div class="note">End with competition or live reps so practice feels fun.</div>
-        <textarea id="practiceNotesInput" placeholder="Custom practice notes..."></textarea>
+     <div class="card">
+      <div class="card-head">
+        <h3>Practice Notes</h3>
+        <div class="subtle">Add anything specific the coaches need to remember for this practice.</div>
+      </div>
+      <div class="card-body">
+        <textarea id="practiceNotesInput" placeholder="Add custom practice notes..."></textarea>
       </div>
     </div>
 
-    <div class="card">
-  <div class="card-head">
-    <h3>Video of the Week</h3>
-    <div class="subtle">Drop in one coaching video, then save it as the featured focus for practice.</div>
-  </div>
-
-  <div class="card-body stack">
-    <div class="video-week-shell">
-      <div class="video-week-header">
-        <div>
-          <div class="video-week-title">Featured training video</div>
-          <div class="video-week-copy">Paste a link or upload a video. The title, category, and coach note will auto-fill when possible.</div>
-        </div>
-
-        <div class="video-mode-toggle">
-          <button type="button" id="videoModeLinkBtn" class="video-mode-btn active" onclick="setVideoMode('link')">Paste Link</button>
-          <button type="button" id="videoModeUploadBtn" class="video-mode-btn" onclick="setVideoMode('upload')">Upload Video</button>
-        </div>
-      </div>
-
-      <div id="videoLinkMode" class="video-mode-panel stack">
-        <div>
-          <label for="videoLinkInput" class="video-field-label">Video link</label>
-          <input
-            id="videoLinkInput"
-            type="url"
-            placeholder="Paste a Facebook, YouTube, Vimeo, or drill link"
-          />
-          <div class="small" style="margin-top:6px;">Title auto-fills from the link when possible. You can still edit it before saving.</div>
-        </div>
-      </div>
-
-      <div id="videoUploadMode" class="video-mode-panel stack" style="display:none;">
-        <div class="video-drop-zone">
-          <label for="videoUploadInput" class="video-field-label">Upload video file</label>
-          <input
-            id="videoUploadInput"
-            type="file"
-            accept="video/*"
-          />
-          <div class="small" style="margin-top:6px;">MP4 works best. The title will auto-fill from the file name.</div>
-        </div>
-      </div>
-
-      <div class="video-form-grid">
-        <div>
-          <label for="videoTitleInput" class="video-field-label">Title</label>
-          <input
-            id="videoTitleInput"
-            type="text"
-            placeholder="Auto-filled title will show here"
-          />
-        </div>
-
-        <div>
-          <label for="videoCategorySelect" class="video-field-label">Category</label>
-          <select id="videoCategorySelect">
-            <option value="">Auto-select category</option>
-            <option value="Hitting">Hitting</option>
-            <option value="Fielding">Fielding</option>
-            <option value="Throwing">Throwing</option>
-            <option value="Pitching">Pitching</option>
-            <option value="Catching">Catching</option>
-            <option value="Base Running">Base Running</option>
-            <option value="Team Defense">Team Defense</option>
-            <option value="Mental Game">Mental Game</option>
-            <option value="Warmup">Warmup</option>
-            <option value="Practice Drill">Practice Drill</option>
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <label for="videoCoachNote" class="video-field-label">Coach note</label>
-        <textarea
-          id="videoCoachNote"
-          placeholder="Auto-filled coaching note will show here. You can edit it before saving."
-        ></textarea>
-      </div>
-
-      <div class="video-actions-row">
-        <div class="actions">
-          <button type="button" onclick="saveVideoOfWeek()">Save featured video</button>
-          <button type="button" class="secondary" onclick="clearVideoOfWeekForm()">Clear</button>
-        </div>
-        <div id="videoSaveHint" class="video-save-hint">Not saved yet</div>
-      </div>
-
-      <div class="video-preview-card">
-        <div class="video-preview-head">
-          <div>
-            <div class="small">Preview</div>
-            <strong id="videoPreviewTitle">No video selected yet</strong>
-          </div>
-          <span id="videoPreviewCategory" class="video-category-pill">No category</span>
-        </div>
-
-        <div id="videoPreviewArea" class="video-preview-area">
-          <div class="subtle">Paste a link or upload a video to preview it here.</div>
-        </div>
-
-        <div id="videoPreviewNote" class="small" style="margin-top:10px;"></div>
-      </div>
-    </div>
-  </div>
-</div>
+    
   </div>
 </div>
     <div id="roster" class="tab">
@@ -2408,27 +2302,6 @@ render();
     document.getElementById('parseCsvBtn').addEventListener('click', handleCsvParse);
     document.getElementById('applyCsvBtn').addEventListener('click', applyCsvImport);
     document.getElementById('nameColumnSelect').addEventListener('change', () => { buildImportPreview(); renderImportPreview(); });
-  document.getElementById('videoLinkInput').addEventListener('input', handleVideoLinkChange);
-
-document.getElementById('videoUploadInput').addEventListener('change', handleVideoUploadChange);
-
-document.getElementById('videoTitleInput').addEventListener('input', (e) => {
-  trainingResource.title = e.target.value;
-  if (!trainingResource.category) trainingResource.category = inferVideoCategory(e.target.value);
-  if (!trainingResource.coachNote) trainingResource.coachNote = buildVideoCoachNote(trainingResource.title, trainingResource.category);
-  saveTrainingResource(false);
-});
-
-document.getElementById('videoCategorySelect').addEventListener('change', (e) => {
-  trainingResource.category = e.target.value;
-  if (!trainingResource.coachNote) trainingResource.coachNote = buildVideoCoachNote(trainingResource.title, trainingResource.category);
-  saveTrainingResource(false);
-});
-
-document.getElementById('videoCoachNote').addEventListener('input', (e) => {
-  trainingResource.coachNote = e.target.value;
-  saveTrainingResource(false);
-});
     document.getElementById('generateCoachResourcesBtn').addEventListener('click', () => generateCoachResourcesFromGoal(practiceGoal));
     document.getElementById('practiceGoalPreset').addEventListener('change', (e) => {
   if (!e.target.value) return;
