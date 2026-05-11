@@ -682,10 +682,15 @@ button:disabled {
             Generates practice notes, drill title, category, and coach note from the goal above.
           </div>
         </div>
-</div>
         <div class="note">
-          <div style="font-weight:700;margin-bottom:10px">Suggested plan</div>
+          <div class="practice-plan-header">
+            <div>
+              <div class="practice-plan-title">Suggested plan</div>
+              <div class="small">Clean drill cards with purpose, cue, and optional video support.</div>
+            </div>
+          </div>
           <div id="practicePlan" class="stack"></div>
+        </div>
         </div>
       </div>
     </div>
@@ -1025,36 +1030,212 @@ function resetPitch() {
   saveGameState();
   render();
 }
-    function buildPracticePlan(goal) {
-      const lower = goal.toLowerCase();
-      if (lower.includes("confidence")) return [
-        "5 min dynamic warmup + throwing",
-        "10 min short hops and easy glove wins",
-        "12 min tee work with middle-of-the-field focus",
-        "12 min front toss: see it, hit it hard",
-        "10 min base running and first-step quickness",
-        "10 min team defense with loud communication",
-        "5 min confidence round: every kid shares one win"
-      ];
-      if (lower.includes("fielding")) return [
-        "5 min dynamic warmup",
-        "12 min infield footwork",
-        "12 min outfield reads and crow hops",
-        "10 min first-base feeds and force plays",
-        "10 min fly ball communication",
-        "10 min rapid-fire team defense",
-        "5 min coach recap"
-      ];
-      return [
-        "5 min dynamic warmup",
-        "10 min tee progression",
-        "10 min front toss",
-        "10 min ground ball station",
-        "10 min fly ball station",
-        "10 min base running",
-        "10 min live reps / scrimmage"
-      ];
+   function buildPracticePlan(goal) {
+  const lower = goal.toLowerCase();
+
+  if (lower.includes("confidence")) return [
+    {
+      title: "Dynamic Warmup + Throwing",
+      minutes: 5,
+      purpose: "Get the boys moving, loose, and ready to practice with energy.",
+      cue: "Move with purpose. No lazy warmup reps."
+    },
+    {
+      title: "Short Hops and Easy Glove Wins",
+      minutes: 10,
+      purpose: "Build quick confidence with clean glove work and simple defensive wins.",
+      cue: "Glove out front. Watch it all the way in."
+    },
+    {
+      title: "Tee Work: Middle of the Field",
+      minutes: 12,
+      purpose: "Create easy barrel contact and help hitters feel successful early.",
+      cue: "Balance first. Hit it back through the middle."
+    },
+    {
+      title: "Front Toss: See It, Hit It Hard",
+      minutes: 12,
+      purpose: "Move from controlled swings into more game-like timing.",
+      cue: "See it deep. Attack the ball."
+    },
+    {
+      title: "Base Running First-Step Quickness",
+      minutes: 10,
+      purpose: "Improve reactions, jumps, and aggressive but smart movement.",
+      cue: "First step wins."
+    },
+    {
+      title: "Team Defense Communication",
+      minutes: 10,
+      purpose: "Build louder field communication and cleaner team defense.",
+      cue: "Be loud early. Call the ball."
+    },
+    {
+      title: "Confidence Round",
+      minutes: 5,
+      purpose: "End practice with each player leaving with one positive takeaway.",
+      cue: "Name one win before we leave."
     }
+  ];
+
+  if (lower.includes("fielding")) return [
+    {
+      title: "Dynamic Warmup",
+      minutes: 5,
+      purpose: "Get the team loose and focused before defensive work.",
+      cue: "Good energy from the first rep."
+    },
+    {
+      title: "Infield Footwork",
+      minutes: 12,
+      purpose: "Improve approach, body control, and fielding position.",
+      cue: "Feet first. Glove second."
+    },
+    {
+      title: "Outfield Reads and Crow Hops",
+      minutes: 12,
+      purpose: "Help outfielders move to the ball and throw with direction.",
+      cue: "Get behind it, then come through it."
+    },
+    {
+      title: "First-Base Feeds and Force Plays",
+      minutes: 10,
+      purpose: "Clean up simple outs and make routine plays automatic.",
+      cue: "Secure the ball, then make the throw."
+    },
+    {
+      title: "Fly Ball Communication",
+      minutes: 10,
+      purpose: "Build confidence calling fly balls and avoiding confusion.",
+      cue: "Call it loud and call it early."
+    },
+    {
+      title: "Rapid-Fire Team Defense",
+      minutes: 10,
+      purpose: "Create game-speed defensive reps with pace.",
+      cue: "Reset fast. Next play."
+    },
+    {
+      title: "Coach Recap",
+      minutes: 5,
+      purpose: "Reinforce the main lesson before the boys leave.",
+      cue: "One thing we did better today."
+    }
+  ];
+
+  return [
+    {
+      title: "Dynamic Warmup",
+      minutes: 5,
+      purpose: "Get the boys loose, moving, and ready to work.",
+      cue: "Start fast. Stay focused."
+    },
+    {
+      title: "Tee Progression",
+      minutes: 10,
+      purpose: "Build clean swing mechanics with controlled reps.",
+      cue: "Balance first. Barrel through the ball."
+    },
+    {
+      title: "Front Toss",
+      minutes: 10,
+      purpose: "Help hitters transfer tee work into timing and contact.",
+      cue: "See it. Hit it hard."
+    },
+    {
+      title: "Ground Ball Station",
+      minutes: 10,
+      purpose: "Improve fielding position, glove presentation, and clean transfers.",
+      cue: "Glove down early."
+    },
+    {
+      title: "Fly Ball Station",
+      minutes: 10,
+      purpose: "Build confidence tracking the ball in the air.",
+      cue: "Beat the ball to the spot."
+    },
+    {
+      title: "Base Running",
+      minutes: 10,
+      purpose: "Improve turns, jumps, and smart aggressive running.",
+      cue: "Run hard, think fast."
+    },
+    {
+      title: "Live Reps / Scrimmage",
+      minutes: 10,
+      purpose: "Finish with game-like reps so practice feels competitive and fun.",
+      cue: "Compete every pitch."
+    }
+  ];
+}
+function escapeHtml(value) {
+  return String(value || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function getPracticeDrillVideoKey(goal, index) {
+  return `practiceDrillVideo_${goal}_${index}`;
+}
+
+function getPracticeDrillVideoLink(goal, index) {
+  return localStorage.getItem(getPracticeDrillVideoKey(goal, index)) || '';
+}
+
+function savePracticeDrillVideoLink(index, value) {
+  localStorage.setItem(getPracticeDrillVideoKey(practiceGoal, index), value.trim());
+  render();
+}
+
+function renderPracticeDrillCards(goal) {
+  return buildPracticePlan(goal).map((drill, idx) => {
+    const savedLink = getPracticeDrillVideoLink(goal, idx);
+    const safeTitle = escapeHtml(drill.title);
+    const safePurpose = escapeHtml(drill.purpose);
+    const safeCue = escapeHtml(drill.cue);
+    const safeLink = escapeHtml(savedLink);
+
+    return `
+      <div class="practice-drill-card">
+        <div class="practice-drill-top">
+          <div class="practice-drill-title">${idx + 1}. ${safeTitle}</div>
+          <div class="practice-drill-minutes">${drill.minutes} min</div>
+        </div>
+
+        <div class="practice-drill-detail">
+          <div>
+            <div class="practice-drill-label">Purpose</div>
+            <div>${safePurpose}</div>
+          </div>
+
+          <div>
+            <div class="practice-drill-label">Coaching cue</div>
+            <div>${safeCue}</div>
+          </div>
+        </div>
+
+        <div class="practice-video-row">
+          <input
+            type="url"
+            value="${safeLink}"
+            placeholder="Optional video link for this drill"
+            onchange="savePracticeDrillVideoLink(${idx}, this.value)"
+          />
+          <button
+            type="button"
+            ${savedLink ? '' : 'disabled'}
+            onclick="openPracticeVideoModal('${idx}')"
+          >
+            Watch Video
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
  function generateCoachResourcesFromGoal(goal) {
   const lower = goal.toLowerCase();
 
@@ -1329,6 +1510,61 @@ function buildYouTubeEmbedUrl(url) {
   } catch (error) {
     return '';
   }
+}
+function buildPracticeVideoEmbedUrl(url) {
+  if (isYouTubeLink(url)) return buildYouTubeEmbedUrl(url);
+
+  // Facebook often blocks embeds because of privacy, permissions, or reel settings.
+  // Keep the saved link, but use the fallback "Open original video" experience.
+  if (isFacebookVideoLink(url)) return '';
+
+  return '';
+}
+
+function openPracticeVideoModal(index) {
+  const link = getPracticeDrillVideoLink(practiceGoal, index);
+  if (!link) return;
+
+  const drill = buildPracticePlan(practiceGoal)[index];
+  const modal = document.getElementById('practiceVideoModal');
+  const modalTitle = document.getElementById('practiceVideoModalTitle');
+  const modalBody = document.getElementById('practiceVideoModalBody');
+
+  if (!modal || !modalTitle || !modalBody) return;
+
+  const embedUrl = buildPracticeVideoEmbedUrl(link);
+
+  modalTitle.textContent = drill ? drill.title : 'Practice Video';
+
+  modalBody.innerHTML = embedUrl
+    ? `
+      <iframe
+        src="${embedUrl}"
+        style="width:100%; height:560px; border:0; border-radius:16px; background:#000;"
+        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+      <div style="margin-top:12px; text-align:center;">
+        <a class="video-open-link" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">Open original video</a>
+      </div>
+    `
+    : `
+      <div class="note" style="text-align:center;">
+        <div style="font-weight:900; margin-bottom:8px;">This link cannot be embedded inside the app.</div>
+        <div class="subtle" style="margin-bottom:14px;">You can still open the original video in a new tab.</div>
+        <a class="video-open-link" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">Open original video</a>
+      </div>
+    `;
+
+  modal.style.display = 'block';
+}
+
+function closePracticeVideoModal() {
+  const modal = document.getElementById('practiceVideoModal');
+  const modalBody = document.getElementById('practiceVideoModalBody');
+
+  if (modal) modal.style.display = 'none';
+  if (modalBody) modalBody.innerHTML = '';
 }
 function saveVideoOfWeek() {
   const titleInput = document.getElementById('videoTitleInput');
@@ -1732,7 +1968,7 @@ log.innerHTML = selectedPlayerLog.length ? selectedPlayerLog.map(e => `
         return `<tr><td><strong>${p.name}</strong></td><td>${row.hits}</td><td>${row.hrs}</td><td>${row.outs}</td><td>${row.rbis}</td><td>${confidenceRead}</td></tr>`;
       }).join('');
 
-      document.getElementById('practicePlan').innerHTML = buildPracticePlan(practiceGoal).map((step, idx) => `<div class="plan-step">${idx + 1}. ${step}</div>`).join('');
+      document.getElementById('practicePlan').innerHTML = renderPracticeDrillCards(practiceGoal);
       const savedPracticeNote = practiceNotesByGoal[practiceGoal] || '';
       document.getElementById('practiceNotesInput').value = savedPracticeNote;
       renderVideoResource();
@@ -2204,5 +2440,18 @@ renderTabs();
 loadGameState();
 loadPlayersFromDB();
 </script>
+<div id="practiceVideoModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,.72); z-index:9999; padding:20px;">
+  <div style="max-width:900px; margin:40px auto; background:white; border-radius:24px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,.25);">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:16px 18px; border-bottom:1px solid var(--line);">
+      <div>
+        <div class="small">Practice drill video</div>
+        <strong id="practiceVideoModalTitle">Watch Video</strong>
+      </div>
+      <button type="button" class="secondary" onclick="closePracticeVideoModal()">Close</button>
+    </div>
+
+    <div id="practiceVideoModalBody" style="padding:18px;"></div>
+  </div>
+</div>
 </body>
 </html>
