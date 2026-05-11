@@ -285,6 +285,84 @@ tbody tr:hover { background: #f8fafc; }
   color: #334155;
   background: #f8fafc;
 }
+    }
+.practice-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.practice-plan-title {
+  font-weight: 900;
+  color: var(--text);
+}
+
+.practice-drill-card {
+  border: 1px solid rgba(15,23,42,.12);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  padding: 14px;
+  box-shadow: 0 4px 14px rgba(15,23,42,.04);
+}
+
+.practice-drill-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.practice-drill-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.practice-drill-minutes {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #e0ecff;
+  color: #172554;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.practice-drill-detail {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.practice-drill-label {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.practice-video-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.practice-video-row input {
+  min-width: 0;
+}
+
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
     .progress {
       height: 10px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin: 8px 0;
     }
